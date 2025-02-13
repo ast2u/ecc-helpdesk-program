@@ -38,5 +38,9 @@ public class Employee {
     @Column(name = "employment_status", nullable = false)
     private String employmentStatus;
 
+    @ManyToOne
+    @JoinColumn (name = "role_id")
+    private EmployeeRole employeeRole;
+
 
 }
