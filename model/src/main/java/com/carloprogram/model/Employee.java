@@ -1,5 +1,6 @@
 package com.carloprogram.model;
 
+import com.carloprogram.model.enums.EmploymentStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -35,12 +36,13 @@ public class Employee {
     @Column(name = "contact_number")
     private String contactNumber;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "employment_status", nullable = false)
-    private String employmentStatus;
+    private EmploymentStatus employmentStatus;
 
     @ManyToOne
     @JoinColumn (name = "role_id")
-    private EmployeeRole employeeRole;
+    private Long employeeRoleId;
 
 
 }
