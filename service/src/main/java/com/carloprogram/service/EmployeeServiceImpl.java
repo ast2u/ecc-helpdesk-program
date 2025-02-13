@@ -3,6 +3,7 @@ package com.carloprogram.service;
 import com.carloprogram.exception.ResourceNotFoundException;
 import com.carloprogram.mapper.EmployeeMapper;
 import com.carloprogram.model.Employee;
+import com.carloprogram.model.enums.EmploymentStatus;
 import com.carloprogram.repository.EmployeeRepository;
 import com.carloprogram.dto.EmployeeDto;
 import lombok.AllArgsConstructor;
@@ -58,7 +59,14 @@ public class EmployeeServiceImpl implements EmployeeService{
         employee.setAge(updatedEmployee.getAge());
         employee.setAddress(updatedEmployee.getAddress());
         employee.setContactNumber(updatedEmployee.getContactNumber());
-        employee.setEmploymentStatus(updatedEmployee.getEmploymentStatus());
+        if (updatedEmployee.getEmploymentStatus() != null) {
+            try {
+                employee.setEmploymentStatus(EmploymentStatus.valueOf(updatedEmployee.getEmploymentStatus().toUpperCase()));
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException("Invalid employment status: " + updatedEmployee.getEmploymentStatus());
+            }
+        }
+        employee.setEmployeeRoleId(updatedEmployee.getEmployeeRoleId());
 
         Employee updatedEmployeeObj = employeeRepository.save(employee);
         return EmployeeMapper.mapToEmployeeDto(updatedEmployeeObj);

@@ -2,6 +2,7 @@ package com.carloprogram.mapper;
 
 import com.carloprogram.model.Employee;
 import com.carloprogram.dto.EmployeeDto;
+import com.carloprogram.model.enums.EmploymentStatus;
 
 public class EmployeeMapper {
 
@@ -13,8 +14,8 @@ public class EmployeeMapper {
                 employee.getAge(),
                 employee.getAddress(),
                 employee.getContactNumber(),
-                employee.getEmploymentStatus(),
-                employee.getEmployeeRole() //fix
+                employee.getEmploymentStatus().name(),
+                employee.getEmployeeRoleId() //fix
         );
     }
 
@@ -26,7 +27,7 @@ public class EmployeeMapper {
                 employeeDto.getAge(),
                 employeeDto.getAddress(),
                 employeeDto.getContactNumber(),
-                employeeDto.getEmploymentStatus(),
+                EmploymentStatus.valueOf(employeeDto.getEmploymentStatus()),
                 employeeDto.getEmployeeRoleId() //fix
 
         );
