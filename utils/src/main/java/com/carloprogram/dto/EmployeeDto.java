@@ -1,6 +1,7 @@
 package com.carloprogram.dto;
 
 
+import com.carloprogram.model.EmployeeRole;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,4 +19,6 @@ public class EmployeeDto {
     private String address;
     private String contactNumber;
     private String employmentStatus;
+    private EmployeeRole employeeRoleId; //fix
+
 }

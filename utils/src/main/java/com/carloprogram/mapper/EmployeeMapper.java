@@ -13,8 +13,8 @@ public class EmployeeMapper {
                 employee.getAge(),
                 employee.getAddress(),
                 employee.getContactNumber(),
-                employee.getEmploymentStatus()
-
+                employee.getEmploymentStatus(),
+                employee.getEmployeeRole() //fix
         );
     }
 
@@ -26,7 +26,8 @@ public class EmployeeMapper {
                 employeeDto.getAge(),
                 employeeDto.getAddress(),
                 employeeDto.getContactNumber(),
-                employeeDto.getEmploymentStatus()
+                employeeDto.getEmploymentStatus(),
+                employeeDto.getEmployeeRoleId() //fix
 
         );
     }
