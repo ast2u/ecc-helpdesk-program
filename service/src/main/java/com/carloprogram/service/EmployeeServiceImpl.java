@@ -1,14 +1,20 @@
 package com.carloprogram.service;
 
+import com.carloprogram.dto.EmployeeRoleDto;
 import com.carloprogram.exception.ResourceNotFoundException;
 import com.carloprogram.mapper.EmployeeMapper;
 import com.carloprogram.model.Employee;
+import com.carloprogram.model.EmployeeRole;
 import com.carloprogram.repository.EmployeeRepository;
 import com.carloprogram.dto.EmployeeDto;
+import com.carloprogram.repository.EmployeeRoleRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -16,14 +22,20 @@ import java.util.stream.Collectors;
 public class EmployeeServiceImpl implements EmployeeService{
 
     private EmployeeRepository employeeRepository;
+    private EmployeeRoleRepository employeeRoleRepository;
 
+    @Transactional
     @Override
     public EmployeeDto createEmployee(EmployeeDto employeeDto) {
-
         Employee employee = EmployeeMapper.mapToEmployee(employeeDto);
+
+        Set<EmployeeRole> roles = employeeDto.getEmployeeRoleIds().stream()
+                .map(roleId -> employeeRoleRepository.findById(roleId.getId()).orElse(null))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+
+        employee.setEmployeeRoles(roles);
         Employee savedEmployee = employeeRepository.save(employee);
-
-
         return EmployeeMapper.mapToEmployeeDto(savedEmployee);
     }
 
@@ -46,6 +58,7 @@ public class EmployeeServiceImpl implements EmployeeService{
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     @Override
     public EmployeeDto updateEmployeeById(Long employeeId, EmployeeDto updatedEmployee) {
         Employee employee = employeeRepository.findById(employeeId)
@@ -59,11 +72,17 @@ public class EmployeeServiceImpl implements EmployeeService{
         employee.setAddress(updatedEmployee.getAddress());
         employee.setContactNumber(updatedEmployee.getContactNumber());
         employee.setEmploymentStatus(updatedEmployee.getEmploymentStatus());
+        Set<EmployeeRole> roles = updatedEmployee.getEmployeeRoleIds().stream()
+                .map(roleId -> employeeRoleRepository.findById(roleId.getId()).orElse(null))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+        employee.setEmployeeRoles(roles);
 
         Employee updatedEmployeeObj = employeeRepository.save(employee);
         return EmployeeMapper.mapToEmployeeDto(updatedEmployeeObj);
     }
 
+    @Transactional
     @Override
     public void deleteEmployeeById(Long employeeId) {
         Employee employee = employeeRepository.findById(employeeId)
@@ -71,7 +90,7 @@ public class EmployeeServiceImpl implements EmployeeService{
                         new ResourceNotFoundException("Employee does not exists" +
                                 "with given id: "+ employeeId));
 
-        employeeRepository.deleteById(employeeId);
+        employeeRepository.delete(employee);
     }
 
 }
