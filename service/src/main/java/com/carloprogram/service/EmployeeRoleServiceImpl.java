@@ -7,6 +7,7 @@ import com.carloprogram.model.EmployeeRole;
 import com.carloprogram.repository.EmployeeRoleRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 public class EmployeeRoleServiceImpl implements EmployeeRoleService {
     private EmployeeRoleRepository employeeRoleRepository;
 
+    @Transactional
     @Override
     public EmployeeRoleDto createEmployeeRole(EmployeeRoleDto employeeRoleDto) {
 
@@ -43,6 +45,7 @@ public class EmployeeRoleServiceImpl implements EmployeeRoleService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     @Override
     public EmployeeRoleDto updateEmployeeRoleById(Long employeeRoleId, EmployeeRoleDto updatedEmployeeRole) {
         EmployeeRole employeeRole = employeeRoleRepository.findById(employeeRoleId)
@@ -55,6 +58,7 @@ public class EmployeeRoleServiceImpl implements EmployeeRoleService {
         return EmployeeRoleMapper.mapToEmployeeRoleDto(updatedEmployeeRoleObj);
     }
 
+    @Transactional
     @Override
     public void deleteEmployeeRoleById(Long employeeRoleId) {
         EmployeeRole employeeRole = employeeRoleRepository.findById(employeeRoleId)
