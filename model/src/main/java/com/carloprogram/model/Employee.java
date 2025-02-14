@@ -1,11 +1,14 @@
 package com.carloprogram.model;
 
+import com.carloprogram.model.enums.EmploymentStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Getter
@@ -35,12 +38,17 @@ public class Employee {
     @Column(name = "contact_number")
     private String contactNumber;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "employment_status", nullable = false)
-    private String employmentStatus;
+    private EmploymentStatus employmentStatus;
 
-    @ManyToOne
-    @JoinColumn (name = "role_id")
-    private EmployeeRole employeeRole;
+    @ManyToMany
+    @JoinTable (
+            name = "employee_to_role",
+            joinColumns = @JoinColumn(name = "employee_id"),
+            inverseJoinColumns = @JoinColumn(name = "employee_role_id")
+    )
+    private Set<EmployeeRole> employeeRoles = new HashSet<>();
 
 
 }
