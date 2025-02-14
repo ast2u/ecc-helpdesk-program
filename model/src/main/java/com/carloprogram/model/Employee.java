@@ -50,5 +50,12 @@ public class Employee {
     )
     private Set<EmployeeRole> employeeRoles = new HashSet<>();
 
+    @OneToMany(mappedBy = "assignee", cascade = CascadeType.ALL)
+    private Set<HelpTicket> assignedTickets;
+
+    @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL)
+    private Set<HelpTicket> createdTickets;
+
+
 
 }
