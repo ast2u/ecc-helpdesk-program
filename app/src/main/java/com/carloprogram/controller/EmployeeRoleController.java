@@ -24,7 +24,7 @@ public class EmployeeRoleController {
     }
 
     //Get employee by id rest api
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<EmployeeRoleDto> getEmployeeById(@PathVariable("id") Long employeeRoleId){
         EmployeeRoleDto employeeRoleDto = employeeRoleService.getEmployeeRoleById(employeeRoleId);
         return ResponseEntity.ok(employeeRoleDto);
@@ -38,17 +38,22 @@ public class EmployeeRoleController {
     }
 
     //Build update employee rest api
-    @PutMapping("{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<EmployeeRoleDto> updateEmployeeRole(@PathVariable("id") Long employeeRoleId,@RequestBody EmployeeRoleDto updatedEmployeeRole){
         EmployeeRoleDto employeeRoleDto = employeeRoleService.updateEmployeeRoleById(employeeRoleId, updatedEmployeeRole);
         return ResponseEntity.ok(employeeRoleDto);
     }
 
     //Build delete employee rest api
-    @DeleteMapping("{id}")
-    public ResponseEntity<String> deleteEmployee(@PathVariable("id") Long employeeRoleId){
-        employeeRoleService.deleteEmployeeRoleById(employeeRoleId);
-        return ResponseEntity.ok("Employee#"+ employeeRoleId +" deleted successfully!");
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteEmployeeRole(@PathVariable("id") Long employeeRoleId){
+        try{
+            employeeRoleService.deleteEmployeeRoleById(employeeRoleId);
+            return ResponseEntity.ok("Employee#"+ employeeRoleId +" deleted successfully!");
+        }catch (RuntimeException ex){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: "+ ex.getMessage());
+        }
+
     }
 
 
