@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -48,7 +48,7 @@ public class Employee {
             joinColumns = @JoinColumn(name = "employee_id"),
             inverseJoinColumns = @JoinColumn(name = "employee_role_id")
     )
-    private Set<EmployeeRole> employeeRoles = new HashSet<>();
+    private List<EmployeeRole> employeeRoles;
 
     @OneToMany(mappedBy = "assignee", cascade = CascadeType.ALL)
     private Set<HelpTicket> assignedTickets;

@@ -1,13 +1,13 @@
 package com.carloprogram.dto;
 
 
-import com.carloprogram.model.EmployeeRole;
 import com.carloprogram.model.enums.EmploymentStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -22,6 +22,6 @@ public class EmployeeDto {
     private String address;
     private String contactNumber;
     private EmploymentStatus employmentStatus;
-    private Set<EmployeeRoleDto> employeeRoleIds;
+    private List<EmployeeRoleDto> employeeRoleIds;
 
 }
