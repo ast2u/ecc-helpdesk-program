@@ -5,7 +5,6 @@ import com.carloprogram.mapper.EmployeeMapper;
 import com.carloprogram.model.Employee;
 import com.carloprogram.model.EmployeeRole;
 import com.carloprogram.model.enums.EmploymentStatus;
-import com.carloprogram.model.enums.TicketStatus;
 import com.carloprogram.repository.EmployeeRepository;
 import com.carloprogram.dto.EmployeeDto;
 import com.carloprogram.repository.EmployeeRoleRepository;
@@ -16,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service

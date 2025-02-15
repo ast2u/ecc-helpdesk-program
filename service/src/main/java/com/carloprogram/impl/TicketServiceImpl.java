@@ -49,7 +49,6 @@ public class TicketServiceImpl implements TicketService {
         ticket.setTicketTitle(helpTicketDto.getTitle());
         ticket.setBody(helpTicketDto.getBody());
         ticket.setStatus(helpTicketDto.getStatus());
-        //ticket.setRemarks(helpTicketDto.getRemarks());
         ticket.setUpdatedBy(updatedBy);
 
         ticket = helpTicketRepository.save(ticket);
@@ -93,7 +92,7 @@ public class TicketServiceImpl implements TicketService {
     public void deleteTicketById(Long ticketNumber) {
         HelpTicket ticket = helpTicketRepository.findById(ticketNumber)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Ticket does not exists" +
+                        new ResourceNotFoundException("Ticket does not exists " +
                                 "with given Ticket Number: "+ ticketNumber));
         helpTicketRepository.delete(ticket);
     }

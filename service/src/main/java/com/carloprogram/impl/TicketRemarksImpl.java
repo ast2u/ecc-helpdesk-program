@@ -2,12 +2,10 @@ package com.carloprogram.impl;
 
 import com.carloprogram.dto.TicketRemarksDto;
 import com.carloprogram.exception.ResourceNotFoundException;
-import com.carloprogram.mapper.HelpTicketMapper;
 import com.carloprogram.mapper.TicketRemarksMapper;
 import com.carloprogram.model.Employee;
 import com.carloprogram.model.HelpTicket;
 import com.carloprogram.model.TicketRemarks;
-import com.carloprogram.model.enums.TicketStatus;
 import com.carloprogram.repository.EmployeeRepository;
 import com.carloprogram.repository.HelpTicketRepository;
 import com.carloprogram.repository.TicketRemarksRepository;
