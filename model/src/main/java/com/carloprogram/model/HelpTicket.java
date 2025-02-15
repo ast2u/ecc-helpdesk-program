@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -50,6 +52,7 @@ public class HelpTicket {
     @JoinColumn(name = "updated_by")
     private Employee updatedBy;
 
-    private String remarks;
+    @OneToMany(mappedBy = "ticketNumber", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TicketRemarks> remarks;
 
 }
