@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -48,13 +50,13 @@ public class Employee {
             joinColumns = @JoinColumn(name = "employee_id"),
             inverseJoinColumns = @JoinColumn(name = "employee_role_id")
     )
-    private List<EmployeeRole> employeeRoles;
+    private List<EmployeeRole> employeeRoles = new ArrayList<>();
 
     @OneToMany(mappedBy = "assignee", cascade = CascadeType.ALL)
-    private Set<HelpTicket> assignedTickets;
+    private Set<HelpTicket> assignedTickets = new HashSet<>();
 
     @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL)
-    private Set<HelpTicket> createdTickets;
+    private Set<HelpTicket> createdTickets = new HashSet<>();
 
 
 

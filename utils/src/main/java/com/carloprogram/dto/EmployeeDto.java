@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -22,6 +23,6 @@ public class EmployeeDto {
     private String address;
     private String contactNumber;
     private EmploymentStatus employmentStatus;
-    private List<EmployeeRoleDto> employeeRoleIds;
+    private List<EmployeeRoleDto> employeeRoleIds = new ArrayList<>();
 
 }

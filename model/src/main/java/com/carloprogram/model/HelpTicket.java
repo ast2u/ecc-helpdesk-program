@@ -53,6 +53,6 @@ public class HelpTicket {
     private Employee updatedBy;
 
     @OneToMany(mappedBy = "ticketNumber", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<TicketRemarks> remarks;
+    private List<TicketRemarks> remarks = new ArrayList<>();
 
 }
