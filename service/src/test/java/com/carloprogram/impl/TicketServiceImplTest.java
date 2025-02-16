@@ -5,6 +5,7 @@ import com.carloprogram.exception.ResourceNotFoundException;
 import com.carloprogram.mapper.EmployeeMapper;
 import com.carloprogram.model.Employee;
 import com.carloprogram.model.HelpTicket;
+import com.carloprogram.model.enums.EmploymentStatus;
 import com.carloprogram.model.enums.TicketStatus;
 import com.carloprogram.repository.EmployeeRepository;
 import com.carloprogram.repository.HelpTicketRepository;
@@ -50,7 +51,7 @@ public class TicketServiceImplTest {
         testTicket.setTicketNumber(100L);
         testTicket.setTicketTitle("Test Ticket");
         testTicket.setBody("This is a test ticket.");
-        testTicket.setStatus(TicketStatus.DRAFT);
+        testTicket.setStatus(null);
         testTicket.setCreatedBy(testEmployee);
         testTicket.setCreatedDate(LocalDateTime.now());
 
@@ -69,19 +70,26 @@ public class TicketServiceImplTest {
     }
 
     @Test
-    public void createTicket_Success() {
+    public void testCreateTicket_SuccessAndStatusNull() {
         when(employeeRepository.findById(1L)).thenReturn(Optional.of(testEmployee));
-        when(helpTicketRepository.save(any(HelpTicket.class))).thenReturn(testTicket);
+        when(helpTicketRepository.save(any(HelpTicket.class))).thenAnswer(invocation -> {
+            HelpTicket savedHelpTicket = invocation.getArgument(0);
+            if (savedHelpTicket.getStatus() == null) {
+                savedHelpTicket.setStatus(TicketStatus.DRAFT);
+            }
+            return savedHelpTicket;
+        });
 
         HelpTicketDto result = ticketService.createTicket(testTicketDto, 1L);
 
         assertNotNull(result);
         assertEquals("Test Ticket", result.getTitle());
+        assertEquals(TicketStatus.DRAFT,result.getStatus());
         verify(helpTicketRepository, times(1)).save(any(HelpTicket.class));
     }
 
     @Test
-    public void createTicket_Fail_EmployeeNotFound() {
+    public void testCreateTicket_Fail_EmployeeNotFound() {
         when(employeeRepository.findById(1L)).thenReturn(Optional.empty());
 
         Exception exception = assertThrows(RuntimeException.class, () ->
@@ -91,7 +99,7 @@ public class TicketServiceImplTest {
     }
 
     @Test
-    void updateTicket_Success() {
+    void testUpdateTicket_Success() {
         HelpTicketDto updatedDto = new HelpTicketDto(
                 testTicket.getTicketNumber(),
                 "Updated Ticket Title",
@@ -117,7 +125,7 @@ public class TicketServiceImplTest {
     }
 
     @Test
-    void updateTicket_Fail_TicketNotFound() {
+    void testUpdateTicket_Fail_TicketNotFound() {
         when(helpTicketRepository.findById(999L)).thenReturn(Optional.empty());
 
         Exception exception = assertThrows(RuntimeException.class, () -> {
@@ -128,7 +136,7 @@ public class TicketServiceImplTest {
     }
 
     @Test
-    void updateTicket_Fail_UpdaterNotFound() {
+    void testUpdateTicket_Fail_UpdaterNotFound() {
         when(helpTicketRepository.findById(100L)).thenReturn(Optional.of(testTicket));
         when(employeeRepository.findById(999L)).thenReturn(Optional.empty());
 
@@ -140,7 +148,7 @@ public class TicketServiceImplTest {
     }
 
     @Test
-    public void getTicketById_Success() {
+    public void testGetTicketById_Success() {
         when(helpTicketRepository.findById(100L)).thenReturn(Optional.of(testTicket));
 
         HelpTicketDto result = ticketService.getTicketById(100L);
@@ -150,7 +158,7 @@ public class TicketServiceImplTest {
     }
 
     @Test
-    public void getTicketById_Fail_TicketNotFound() {
+    public void testGetTicketById_Fail_TicketNotFound() {
         when(helpTicketRepository.findById(999L)).thenReturn(Optional.empty());
 
         Exception exception = assertThrows(ResourceNotFoundException.class, () -> {
@@ -161,7 +169,7 @@ public class TicketServiceImplTest {
     }
 
     @Test
-    public void getAllTicketsTest(){
+    public void testGetAllTickets(){
         when(helpTicketRepository.findAll()).thenReturn(Collections.singletonList(testTicket));
 
         List<HelpTicketDto> result = ticketService.getAllTickets();
@@ -175,7 +183,7 @@ public class TicketServiceImplTest {
     }
 
     @Test
-    public void assignTicket_Success() {
+    public void testAssignTicket_Success() {
         Employee assignee = new Employee();
         assignee.setId(2L);
         assignee.setFirstName("Jane");
@@ -192,7 +200,7 @@ public class TicketServiceImplTest {
     }
 
     @Test
-    public void assignTicket_TicketNotFound(){
+    public void testAssignTicket_TicketNotFound(){
         when(helpTicketRepository.findById(999L)).thenReturn(Optional.empty());
         Exception exception = assertThrows(RuntimeException.class, () -> {
             ticketService.assignTicket(999L,1L);
@@ -201,7 +209,7 @@ public class TicketServiceImplTest {
     }
 
     @Test
-    public void assignTicket_AssigneeNotFound(){
+    public void testAssignTicket_AssigneeNotFound(){
 
         when(helpTicketRepository.findById(100L)).thenReturn(Optional.of(testTicket));
         Exception exception = assertThrows(RuntimeException.class, () -> {
@@ -211,7 +219,7 @@ public class TicketServiceImplTest {
     }
 
     @Test
-    public void deleteTicketById_Success() {
+    public void testDeleteTicketById_Success() {
         when(helpTicketRepository.findById(100L)).thenReturn(Optional.of(testTicket));
 
         ticketService.deleteTicketById(100L);
@@ -220,7 +228,7 @@ public class TicketServiceImplTest {
     }
 
     @Test
-    void deleteTicketById_Fail_TicketNotFound() {
+    void testDeleteTicketById_Fail_TicketNotFound() {
         when(helpTicketRepository.findById(999L)).thenReturn(Optional.empty());
 
         Exception exception = assertThrows(ResourceNotFoundException.class, () -> {
