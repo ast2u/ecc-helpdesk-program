@@ -28,28 +28,28 @@ public class TicketRemarksImpl implements TicketRemarksService {
     @Transactional
     @Override
     public TicketRemarksDto addRemark(TicketRemarksDto ticketRemarksDto, Long ticketNumber, Long employeeId) {
-        // Fetch the ticket by ticketNumber
         HelpTicket ticket = helpTicketRepository.findById(ticketNumber)
-                .orElseThrow(() -> new RuntimeException("Ticket not found with ticketNumber: " + ticketNumber));
+                .orElseThrow(() -> new ResourceNotFoundException("Ticket not found with ticketNumber: " + ticketNumber));
 
-        // Fetch the employee who wrote the remark
         Employee employee = employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new RuntimeException("Employee not found with ID: " + employeeId));
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with ID: " + employeeId));
 
-        // Create a new TicketRemarks object
         TicketRemarks remark = TicketRemarksMapper.mapToTicketRemarks(ticketRemarksDto, ticket, employee);
 
-        // Save the remark to the database
         TicketRemarks savedRemark = ticketRemarksRepository.save(remark);
 
-        // Return the mapped DTO
         return TicketRemarksMapper.mapToTicketRemarksDto(savedRemark);
     }
 
     @Override
     public List<TicketRemarksDto> getRemarksByTicketId(Long ticketId) {
-        return ticketRemarksRepository.findById(ticketId)
-                .stream()
+
+        HelpTicket ticket = helpTicketRepository.findById(ticketId)
+                .orElseThrow(() -> new ResourceNotFoundException("Ticket not found with ticketNumber: " + ticketId));
+
+        List<TicketRemarks> remarks = ticketRemarksRepository.findByTicketNumber(ticket);
+
+        return remarks.stream()
                 .map(TicketRemarksMapper::mapToTicketRemarksDto)
                 .collect(Collectors.toList());
     }
@@ -58,16 +58,11 @@ public class TicketRemarksImpl implements TicketRemarksService {
     public void deleteRemark(Long ticketId, Long id) {
         HelpTicket ticket = helpTicketRepository.findById(ticketId)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Ticket does not exists" +
-                                "with given Ticket Number: "+ ticketId));
+                        new ResourceNotFoundException("Ticket not found with ticketNumber: "+ ticketId));
 
         TicketRemarks ticketRemarks = ticketRemarksRepository.findById(id)
                 .orElseThrow(()->
-                        new ResourceNotFoundException("This Remark does not exists"));
-
-        if (!ticketRemarks.getTicketNumber().equals(ticket)) {
-            throw new IllegalArgumentException("Remark does not belong to the specified ticket");
-        }
+                        new ResourceNotFoundException("This remark does not exist"));
 
         ticketRemarksRepository.delete(ticketRemarks);
     }
