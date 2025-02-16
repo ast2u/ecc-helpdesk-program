@@ -49,6 +49,14 @@ public class EmployeeController {
         return ResponseEntity.ok(employeeDto);
     }
 
+    @PutMapping("/{id}/assign-roles")
+    public ResponseEntity<EmployeeDto> assignRolesToEmployee(
+            @PathVariable("id") Long employeeId,
+            @RequestBody List<Long> roleIds) {
+        EmployeeDto updatedEmployee = employeeService.assignRoleToEmployee(employeeId, roleIds);
+        return ResponseEntity.ok(updatedEmployee);
+    }
+
     //Build delete employee rest api
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteEmployee(@PathVariable("id") Long employeeId){

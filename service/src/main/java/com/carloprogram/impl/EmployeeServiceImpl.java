@@ -71,7 +71,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public EmployeeDto updateEmployeeById(Long employeeId, EmployeeDto updatedEmployee) {
         Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Employee does not exists" +
+                        new ResourceNotFoundException("Employee does not exists " +
                                 "with given id: "+ employeeId));
 
         employee.setFirstName(updatedEmployee.getFirstName());
@@ -87,7 +87,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                     .filter(Objects::nonNull)
                     .collect(Collectors.toList());
             employee.setEmployeeRoles(roles);
-        }else {
+        } else {
             employee.setEmployeeRoles(null);
         }
 
@@ -100,9 +100,26 @@ public class EmployeeServiceImpl implements EmployeeService {
     public void deleteEmployeeById(Long employeeId) {
         Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Employee does not exists" +
+                        new ResourceNotFoundException("Employee does not exists " +
                                 "with given id: "+ employeeId));
         employeeRepository.delete(employee);
+    }
+
+    @Override
+    public EmployeeDto assignRoleToEmployee(Long employeeId, List<Long> roleIds) {
+        Employee employee = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with ID: " + employeeId));
+
+        List<EmployeeRole> roles = roleIds.stream()
+                .map(roleId -> employeeRoleRepository.findById(roleId)
+                        .orElseThrow(() -> new ResourceNotFoundException("Role not found with ID: " + roleId)))
+                .collect(Collectors.toList());
+
+        employee.setEmployeeRoles(roles);
+
+        Employee updatedEmployee = employeeRepository.save(employee);
+
+        return EmployeeMapper.mapToEmployeeDto(updatedEmployee);
     }
 
 }
