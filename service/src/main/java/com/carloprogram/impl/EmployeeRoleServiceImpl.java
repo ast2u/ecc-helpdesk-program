@@ -21,11 +21,9 @@ public class EmployeeRoleServiceImpl implements EmployeeRoleService {
     @Transactional
     @Override
     public EmployeeRoleDto createEmployeeRole(EmployeeRoleDto employeeRoleDto) {
-
         EmployeeRole employeeRole = EmployeeRoleMapper.mapToEmployeeRole(employeeRoleDto);
         EmployeeRole savedEmployeeRole = employeeRoleRepository.save(employeeRole);
         return EmployeeRoleMapper.mapToEmployeeRoleDto(savedEmployeeRole);
-
 
     }
 
@@ -53,7 +51,7 @@ public class EmployeeRoleServiceImpl implements EmployeeRoleService {
     public EmployeeRoleDto updateEmployeeRoleById(Long employeeRoleId, EmployeeRoleDto updatedEmployeeRole) {
         EmployeeRole employeeRole = employeeRoleRepository.findById(employeeRoleId)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Employee does not exists " +
+                        new ResourceNotFoundException("Role does not exist " +
                                 "with given id: " + employeeRoleId));
         employeeRole.setRole_title(updatedEmployeeRole.getRole_title());
         employeeRole.setRole_description(updatedEmployeeRole.getRole_description());
@@ -66,7 +64,7 @@ public class EmployeeRoleServiceImpl implements EmployeeRoleService {
     public void deleteEmployeeRoleById(Long employeeRoleId) {
         EmployeeRole employeeRole = employeeRoleRepository.findById(employeeRoleId)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Employee does not exists " +
+                        new ResourceNotFoundException("Role does not exist " +
                                 "with given id: " + employeeRoleId));
 
         employeeRoleRepository.deleteById(employeeRoleId);

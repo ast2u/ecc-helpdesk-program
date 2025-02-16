@@ -25,7 +25,7 @@ public class TicketServiceImpl implements TicketService {
     @Override
     public HelpTicketDto createTicket(HelpTicketDto helpTicketDto, Long createdById) {
         Employee createdBy = employeeRepository.findById(createdById)
-                .orElseThrow(() -> new RuntimeException("Employee not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not found"));
 
         HelpTicket ticket = HelpTicketMapper.mapToTicket(helpTicketDto, null, createdBy, null,null);
 
