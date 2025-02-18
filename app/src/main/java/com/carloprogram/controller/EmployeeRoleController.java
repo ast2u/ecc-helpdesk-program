@@ -2,7 +2,6 @@ package com.carloprogram.controller;
 
 
 import com.carloprogram.dto.EmployeeRoleDto;
-import com.carloprogram.model.Employee;
 import com.carloprogram.model.EmployeeRole;
 import com.carloprogram.service.EmployeeRoleService;
 import lombok.AllArgsConstructor;
@@ -50,8 +49,10 @@ public class EmployeeRoleController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteEmployeeRole(@PathVariable("id") Long employeeRoleId){
         try{
+            EmployeeRoleDto employeeRole = employeeRoleService.getEmployeeRoleById(employeeRoleId);
+            String roleTitle = employeeRole.getRole_title();
             employeeRoleService.deleteEmployeeRoleById(employeeRoleId);
-            return ResponseEntity.ok("Employee#"+ employeeRoleId +" deleted successfully!");
+            return ResponseEntity.ok("Role name: "+ roleTitle +" deleted successfully!");
         }catch (RuntimeException ex){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: "+ ex.getMessage());
         }
