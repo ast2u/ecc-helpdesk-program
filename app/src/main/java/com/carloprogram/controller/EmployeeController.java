@@ -1,7 +1,6 @@
 package com.carloprogram.controller;
 
 import com.carloprogram.dto.EmployeeDto;
-import com.carloprogram.dto.EmployeeRoleDto;
 import com.carloprogram.service.EmployeeService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -9,9 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import static org.springframework.http.ResponseEntity.ok;
 
