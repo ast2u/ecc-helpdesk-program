@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MainApplication {
 
     /* TODO: Create testing for rest apis,
-        mock a database and create a profile for testing and dev */
+        Create admin and user security */
 
     @RequestMapping("/")
     String home(){

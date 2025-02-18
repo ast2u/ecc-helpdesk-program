@@ -2,6 +2,8 @@ package com.carloprogram.controller;
 
 
 import com.carloprogram.dto.EmployeeRoleDto;
+import com.carloprogram.model.Employee;
+import com.carloprogram.model.EmployeeRole;
 import com.carloprogram.service.EmployeeRoleService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,35 +18,35 @@ import java.util.List;
 public class EmployeeRoleController {
     private EmployeeRoleService employeeRoleService;
 
-    //Build App Employee Rest API
+    //Build Create role Rest API
     @PostMapping
     public ResponseEntity<EmployeeRoleDto> createEmployeeRole (@RequestBody EmployeeRoleDto employeeRoleDto){
         EmployeeRoleDto savedEmployee = employeeRoleService.createEmployeeRole(employeeRoleDto);
         return new ResponseEntity<>(savedEmployee, HttpStatus.CREATED);
     }
 
-    //Get employee by id rest api
+    //Get role by id rest api
     @GetMapping("/{id}")
     public ResponseEntity<EmployeeRoleDto> getEmployeeById(@PathVariable("id") Long employeeRoleId){
         EmployeeRoleDto employeeRoleDto = employeeRoleService.getEmployeeRoleById(employeeRoleId);
         return ResponseEntity.ok(employeeRoleDto);
     }
 
-    //Build get all employees rest api
+    //Build get all role rest api
     @GetMapping
     public ResponseEntity<List<EmployeeRoleDto>> getEmployeeRoles(){
         List<EmployeeRoleDto> employeeRoles = employeeRoleService.getAllEmployeeRoles();
         return ResponseEntity.ok(employeeRoles);
     }
 
-    //Build update employee rest api
+    //Build update role rest api
     @PutMapping("/{id}")
     public ResponseEntity<EmployeeRoleDto> updateEmployeeRole(@PathVariable("id") Long employeeRoleId,@RequestBody EmployeeRoleDto updatedEmployeeRole){
         EmployeeRoleDto employeeRoleDto = employeeRoleService.updateEmployeeRoleById(employeeRoleId, updatedEmployeeRole);
         return ResponseEntity.ok(employeeRoleDto);
     }
 
-    //Build delete employee rest api
+    //Build delete role rest api
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteEmployeeRole(@PathVariable("id") Long employeeRoleId){
         try{
