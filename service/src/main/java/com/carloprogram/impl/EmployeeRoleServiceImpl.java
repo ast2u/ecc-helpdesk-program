@@ -3,7 +3,9 @@ package com.carloprogram.impl;
 import com.carloprogram.dto.EmployeeRoleDto;
 import com.carloprogram.exception.ResourceNotFoundException;
 import com.carloprogram.mapper.EmployeeRoleMapper;
+import com.carloprogram.model.Employee;
 import com.carloprogram.model.EmployeeRole;
+import com.carloprogram.repository.EmployeeRepository;
 import com.carloprogram.repository.EmployeeRoleRepository;
 import com.carloprogram.service.EmployeeRoleService;
 import lombok.AllArgsConstructor;
@@ -17,6 +19,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class EmployeeRoleServiceImpl implements EmployeeRoleService {
     private EmployeeRoleRepository employeeRoleRepository;
+    private EmployeeRepository employeeRepository;
 
     @Transactional
     @Override
@@ -66,6 +69,10 @@ public class EmployeeRoleServiceImpl implements EmployeeRoleService {
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Role does not exist " +
                                 "with given id: " + employeeRoleId));
+        for(Employee employee : employeeRole.getEmployees()){
+            employee.removeRole(employeeRole);
+            employeeRepository.save(employee);
+        }
 
         employeeRoleRepository.deleteById(employeeRoleId);
     }

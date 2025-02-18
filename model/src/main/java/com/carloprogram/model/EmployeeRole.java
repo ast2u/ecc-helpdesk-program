@@ -27,7 +27,7 @@ public class EmployeeRole {
     @Column(name = "role_desc")
     private String role_description;
 
-    @ManyToMany(mappedBy = "employeeRoles")
+    @ManyToMany(mappedBy = "employeeRoles", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<Employee> employees = new HashSet<>();
 
 }

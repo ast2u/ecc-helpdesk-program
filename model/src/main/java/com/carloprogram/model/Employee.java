@@ -58,6 +58,12 @@ public class Employee {
     @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL)
     private Set<HelpTicket> createdTickets = new HashSet<>();
 
+    public void removeRole(EmployeeRole role){
+        if(employeeRoles != null){
+            this.employeeRoles.remove(role);
+        }
+    }
+
 
 
 }
