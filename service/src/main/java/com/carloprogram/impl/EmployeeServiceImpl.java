@@ -1,6 +1,7 @@
 package com.carloprogram.impl;
 
 import com.carloprogram.exception.ResourceNotFoundException;
+import com.carloprogram.logging.LogExecution;
 import com.carloprogram.mapper.EmployeeMapper;
 import com.carloprogram.model.Employee;
 import com.carloprogram.model.EmployeeRole;
@@ -9,7 +10,7 @@ import com.carloprogram.repository.EmployeeRepository;
 import com.carloprogram.dto.EmployeeDto;
 import com.carloprogram.repository.EmployeeRoleRepository;
 import com.carloprogram.service.EmployeeService;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,13 +19,18 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService {
 
+    @Autowired
     private EmployeeRepository employeeRepository;
+
+    @Autowired
     private EmployeeRoleRepository employeeRoleRepository;
 
+    //Add custom annotation, create logging
+
     @Transactional
+    @LogExecution
     @Override
     public EmployeeDto createEmployee(EmployeeDto employeeDto) {
         Employee employee = EmployeeMapper.mapToEmployee(employeeDto);
@@ -67,6 +73,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Transactional
+    @LogExecution
     @Override
     public EmployeeDto updateEmployeeById(Long employeeId, EmployeeDto updatedEmployee) {
         Employee employee = employeeRepository.findById(employeeId)
@@ -96,6 +103,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Transactional
+    @LogExecution
     @Override
     public void deleteEmployeeById(Long employeeId) {
         Employee employee = employeeRepository.findById(employeeId)
@@ -106,6 +114,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    @LogExecution
     public EmployeeDto assignRoleToEmployee(Long employeeId, List<Long> roleIds) {
         Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new ResourceNotFoundException("Employee not found with ID: " + employeeId));
