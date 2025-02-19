@@ -88,7 +88,7 @@ public class EmployeeRoleImplTest {
 
         assertNotNull(result);
         assertEquals(1, result.size());
-        assertEquals("Software Engineer", result.get(0).getRole_title());
+        assertEquals("Software Engineer", result.getFirst().getRole_title());
 
         verify(employeeRoleRepository, times(1)).findAll();
     }
