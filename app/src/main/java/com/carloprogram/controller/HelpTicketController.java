@@ -1,9 +1,8 @@
 package com.carloprogram.controller;
 
-import com.carloprogram.dto.EmployeeDto;
 import com.carloprogram.dto.HelpTicketDto;
 import com.carloprogram.service.TicketService;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,17 +10,15 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@AllArgsConstructor
 @RequestMapping("/api/tickets")
 public class HelpTicketController {
-    private final TicketService ticketService;
-
     /*
     TODO: Admin must be able to add a remark and update status of the ticket.
      Must be able to assign ticket to an employee
-
     */
 
+    @Autowired
+    private TicketService ticketService;
 
     @PostMapping("/create/{createdById}")
     public ResponseEntity<HelpTicketDto> createTicket(@RequestBody HelpTicketDto ticketDto,

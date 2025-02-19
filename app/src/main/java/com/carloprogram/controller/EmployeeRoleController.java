@@ -2,19 +2,19 @@ package com.carloprogram.controller;
 
 
 import com.carloprogram.dto.EmployeeRoleDto;
-import com.carloprogram.model.EmployeeRole;
 import com.carloprogram.service.EmployeeRoleService;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@AllArgsConstructor
 @RestController
 @RequestMapping("/api/employee_roles")
 public class EmployeeRoleController {
+
+    @Autowired
     private EmployeeRoleService employeeRoleService;
 
     //Build Create role Rest API

@@ -1,9 +1,8 @@
 package com.carloprogram.controller;
 
-import com.carloprogram.dto.HelpTicketDto;
 import com.carloprogram.dto.TicketRemarksDto;
 import com.carloprogram.service.TicketRemarksService;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,8 +10,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/tickets/{ticketId}/remarks")
-@AllArgsConstructor
 public class TicketRemarksController {
+
+    @Autowired
     private TicketRemarksService ticketRemarkService;
 
     @PostMapping("/{employeeId}")
