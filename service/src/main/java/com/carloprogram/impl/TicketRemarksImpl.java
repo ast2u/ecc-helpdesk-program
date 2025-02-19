@@ -10,7 +10,7 @@ import com.carloprogram.repository.EmployeeRepository;
 import com.carloprogram.repository.HelpTicketRepository;
 import com.carloprogram.repository.TicketRemarksRepository;
 import com.carloprogram.service.TicketRemarksService;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,12 +18,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
 public class TicketRemarksImpl implements TicketRemarksService {
 
-    TicketRemarksRepository ticketRemarksRepository;
-    HelpTicketRepository helpTicketRepository;
-    EmployeeRepository employeeRepository;
+    @Autowired
+    private TicketRemarksRepository ticketRemarksRepository;
+
+    @Autowired
+    private HelpTicketRepository helpTicketRepository;
+
+    @Autowired
+    private EmployeeRepository employeeRepository;
 
     @Transactional
     @Override

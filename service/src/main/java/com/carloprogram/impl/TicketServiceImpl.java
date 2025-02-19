@@ -9,18 +9,20 @@ import com.carloprogram.model.enums.TicketStatus;
 import com.carloprogram.repository.EmployeeRepository;
 import com.carloprogram.repository.HelpTicketRepository;
 import com.carloprogram.service.TicketService;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
 public class TicketServiceImpl implements TicketService {
 
-    private final HelpTicketRepository helpTicketRepository;
-    private final EmployeeRepository employeeRepository;
+    @Autowired
+    private HelpTicketRepository helpTicketRepository;
+
+    @Autowired
+    private EmployeeRepository employeeRepository;
 
     @Override
     public HelpTicketDto createTicket(HelpTicketDto helpTicketDto, Long createdById) {
