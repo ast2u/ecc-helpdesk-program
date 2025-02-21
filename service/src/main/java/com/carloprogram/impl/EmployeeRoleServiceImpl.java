@@ -2,6 +2,7 @@ package com.carloprogram.impl;
 
 import com.carloprogram.dto.EmployeeRoleDto;
 import com.carloprogram.exception.ResourceNotFoundException;
+import com.carloprogram.logging.LogExecution;
 import com.carloprogram.mapper.EmployeeRoleMapper;
 import com.carloprogram.model.Employee;
 import com.carloprogram.model.EmployeeRole;
@@ -25,6 +26,7 @@ public class EmployeeRoleServiceImpl implements EmployeeRoleService {
     private EmployeeRepository employeeRepository;
 
     @Transactional
+    @LogExecution
     @Override
     public EmployeeRoleDto createEmployeeRole(EmployeeRoleDto employeeRoleDto) {
         EmployeeRole employeeRole = EmployeeRoleMapper.mapToEmployeeRole(employeeRoleDto);
@@ -53,6 +55,7 @@ public class EmployeeRoleServiceImpl implements EmployeeRoleService {
     }
 
     @Transactional
+    @LogExecution
     @Override
     public EmployeeRoleDto updateEmployeeRoleById(Long employeeRoleId, EmployeeRoleDto updatedEmployeeRole) {
         EmployeeRole employeeRole = employeeRoleRepository.findById(employeeRoleId)

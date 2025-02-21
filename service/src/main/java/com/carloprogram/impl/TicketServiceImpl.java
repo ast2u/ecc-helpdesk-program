@@ -2,6 +2,7 @@ package com.carloprogram.impl;
 
 import com.carloprogram.dto.HelpTicketDto;
 import com.carloprogram.exception.ResourceNotFoundException;
+import com.carloprogram.logging.LogExecution;
 import com.carloprogram.mapper.HelpTicketMapper;
 import com.carloprogram.model.Employee;
 import com.carloprogram.model.HelpTicket;
@@ -9,6 +10,7 @@ import com.carloprogram.model.enums.TicketStatus;
 import com.carloprogram.repository.EmployeeRepository;
 import com.carloprogram.repository.HelpTicketRepository;
 import com.carloprogram.service.TicketService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +26,8 @@ public class TicketServiceImpl implements TicketService {
     @Autowired
     private EmployeeRepository employeeRepository;
 
+    @LogExecution
+    @Transactional
     @Override
     public HelpTicketDto createTicket(HelpTicketDto helpTicketDto, Long createdById) {
         Employee createdBy = employeeRepository.findById(createdById)
@@ -40,6 +44,7 @@ public class TicketServiceImpl implements TicketService {
         return HelpTicketMapper.mapToTicketDto(ticket);
     }
 
+    @LogExecution
     @Override
     public HelpTicketDto updateTicket(Long ticketNumber, HelpTicketDto helpTicketDto, Long updatedById) {
         HelpTicket ticket = helpTicketRepository.findById(ticketNumber)
@@ -57,6 +62,7 @@ public class TicketServiceImpl implements TicketService {
         return HelpTicketMapper.mapToTicketDto(ticket);
     }
 
+    @LogExecution
     @Override
     public HelpTicketDto assignTicket(Long ticketNumber, Long assigneeId) {
         HelpTicket ticket = helpTicketRepository.findById(ticketNumber)

@@ -2,6 +2,7 @@ package com.carloprogram.impl;
 
 import com.carloprogram.dto.TicketRemarksDto;
 import com.carloprogram.exception.ResourceNotFoundException;
+import com.carloprogram.logging.LogExecution;
 import com.carloprogram.mapper.TicketRemarksMapper;
 import com.carloprogram.model.Employee;
 import com.carloprogram.model.HelpTicket;
@@ -30,6 +31,7 @@ public class TicketRemarksImpl implements TicketRemarksService {
     private EmployeeRepository employeeRepository;
 
     @Transactional
+    @LogExecution
     @Override
     public TicketRemarksDto addRemark(TicketRemarksDto ticketRemarksDto, Long ticketNumber, Long employeeId) {
         HelpTicket ticket = helpTicketRepository.findById(ticketNumber)
