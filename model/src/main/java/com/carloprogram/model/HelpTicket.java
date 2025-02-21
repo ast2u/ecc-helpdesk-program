@@ -1,38 +1,58 @@
 package com.carloprogram.model;
+import com.carloprogram.model.enums.TicketStatus;
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-//@Entity
-//@Table(name = "help_ticket")
+@Entity
+@Table(name = "help_tickets")
 public class HelpTicket {
-    //@Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long ticket_number;
 
-    //@Column(name = "title", nullable = false)
-    private String ticket_title;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ticket_number")
+    private Long ticketNumber;
 
-    //@Column(name = "body", nullable = false)
+    @Column(nullable = false)
+    private String ticketTitle;
+
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String body;
 
+    @Column(nullable = false)
+    private TicketStatus status;
 
-    private String assignee;
+    @CreationTimestamp
+    private LocalDateTime createdDate;
 
-    //@Column(name = "status", nullable = false)
-    private String status;
-    private Date created_date;
-    private String created_by;
-    private Date updated_date;
-    private String updated_by;
-    private String remarks;
+    @UpdateTimestamp
+    private LocalDateTime updatedDate;
+
+    @ManyToOne
+    @JoinColumn(name = "assignee_id")
+    private Employee assignee;
+
+    @ManyToOne
+    @JoinColumn(name = "created_by", updatable = false)
+    private Employee createdBy;
+
+    @ManyToOne
+    @JoinColumn(name = "updated_by")
+    private Employee updatedBy;
+
+    @OneToMany(mappedBy = "ticketNumber", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TicketRemarks> remarks = new ArrayList<>();
 
 }

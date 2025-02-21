@@ -1,27 +1,38 @@
-package com.carloprogram.service;
+package com.carloprogram.impl;
 
 import com.carloprogram.dto.EmployeeRoleDto;
 import com.carloprogram.exception.ResourceNotFoundException;
+import com.carloprogram.logging.LogExecution;
 import com.carloprogram.mapper.EmployeeRoleMapper;
+import com.carloprogram.model.Employee;
 import com.carloprogram.model.EmployeeRole;
+import com.carloprogram.repository.EmployeeRepository;
 import com.carloprogram.repository.EmployeeRoleRepository;
-import lombok.AllArgsConstructor;
+import com.carloprogram.service.EmployeeRoleService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
 public class EmployeeRoleServiceImpl implements EmployeeRoleService {
+
+    @Autowired
     private EmployeeRoleRepository employeeRoleRepository;
 
+    @Autowired
+    private EmployeeRepository employeeRepository;
+
+    @Transactional
+    @LogExecution
     @Override
     public EmployeeRoleDto createEmployeeRole(EmployeeRoleDto employeeRoleDto) {
-
         EmployeeRole employeeRole = EmployeeRoleMapper.mapToEmployeeRole(employeeRoleDto);
         EmployeeRole savedEmployeeRole = employeeRoleRepository.save(employeeRole);
         return EmployeeRoleMapper.mapToEmployeeRoleDto(savedEmployeeRole);
+
     }
 
     @Override
@@ -43,11 +54,13 @@ public class EmployeeRoleServiceImpl implements EmployeeRoleService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
+    @LogExecution
     @Override
     public EmployeeRoleDto updateEmployeeRoleById(Long employeeRoleId, EmployeeRoleDto updatedEmployeeRole) {
         EmployeeRole employeeRole = employeeRoleRepository.findById(employeeRoleId)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Employee does not exists " +
+                        new ResourceNotFoundException("Role does not exist " +
                                 "with given id: " + employeeRoleId));
         employeeRole.setRole_title(updatedEmployeeRole.getRole_title());
         employeeRole.setRole_description(updatedEmployeeRole.getRole_description());
@@ -55,12 +68,17 @@ public class EmployeeRoleServiceImpl implements EmployeeRoleService {
         return EmployeeRoleMapper.mapToEmployeeRoleDto(updatedEmployeeRoleObj);
     }
 
+    @Transactional
     @Override
     public void deleteEmployeeRoleById(Long employeeRoleId) {
         EmployeeRole employeeRole = employeeRoleRepository.findById(employeeRoleId)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Employee does not exists " +
+                        new ResourceNotFoundException("Role does not exist " +
                                 "with given id: " + employeeRoleId));
+        for(Employee employee : employeeRole.getEmployees()){
+            employee.removeRole(employeeRole);
+            employeeRepository.save(employee);
+        }
 
         employeeRoleRepository.deleteById(employeeRoleId);
     }

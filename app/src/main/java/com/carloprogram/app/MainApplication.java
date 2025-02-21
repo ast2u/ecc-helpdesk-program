@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class MainApplication {
 
+    /* TODO: Create testing for rest apis,
+        Create admin and user security */
+
     @RequestMapping("/")
     String home(){
         return "It works. The Server is running";

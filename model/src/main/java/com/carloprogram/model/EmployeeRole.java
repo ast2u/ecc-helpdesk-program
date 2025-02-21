@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -16,12 +19,15 @@ public class EmployeeRole {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long role_id;
+    private Long id;
 
-    @Column(name = "role_title", nullable = false)
+    @Column(name = "role_title")
     private String role_title;
 
-    @Column(name = "role_desc", nullable = false)
+    @Column(name = "role_desc")
     private String role_description;
+
+    @ManyToMany(mappedBy = "employeeRoles", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private Set<Employee> employees = new HashSet<>();
 
 }

@@ -7,6 +7,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 
 @Getter
@@ -40,9 +44,25 @@ public class Employee {
     @Column(name = "employment_status", nullable = false)
     private EmploymentStatus employmentStatus;
 
-    @ManyToOne
-    @JoinColumn (name = "role_id")
-    private Long employeeRoleId;
+    @ManyToMany
+    @JoinTable (
+            name = "employee_to_role",
+            joinColumns = @JoinColumn(name = "employee_id"),
+            inverseJoinColumns = @JoinColumn(name = "employee_role_id")
+    )
+    private List<EmployeeRole> employeeRoles = new ArrayList<>();
+
+    @OneToMany(mappedBy = "assignee", cascade = CascadeType.ALL)
+    private Set<HelpTicket> assignedTickets = new HashSet<>();
+
+    @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL)
+    private Set<HelpTicket> createdTickets = new HashSet<>();
+
+    public void removeRole(EmployeeRole role){
+        if(employeeRoles != null){
+            this.employeeRoles.remove(role);
+        }
+    }
 
 
 }
