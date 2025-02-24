@@ -13,17 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @ComponentScan(basePackages = "com.carloprogram")
 @EntityScan(basePackages = "com.carloprogram.model")
 @EnableJpaRepositories(basePackages = "com.carloprogram.repository")
-@RestController
 public class MainApplication {
-
-    /* TODO: Create testing for rest apis,
-        Create admin and user security */
-
-    @RequestMapping("/")
-    String home(){
-        return "It works. The Server is running";
-    }
-
 
     public static void main(String[] args)
     {
