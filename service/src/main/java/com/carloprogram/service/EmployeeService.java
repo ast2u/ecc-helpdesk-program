@@ -1,12 +1,13 @@
 package com.carloprogram.service;
 
 import com.carloprogram.dto.EmployeeDto;
-import com.carloprogram.dto.EmployeeRoleDto;
+import com.carloprogram.dto.LoginRequest;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
-import java.util.Set;
 
 public interface EmployeeService {
+    ResponseEntity<?> authenticateUser(LoginRequest loginRequest);
     EmployeeDto createEmployee(EmployeeDto employeeDto);
     EmployeeDto getEmployeeById(Long employeeId);
     List<EmployeeDto> getAllEmployees();

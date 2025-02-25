@@ -1,16 +1,28 @@
 package com.carloprogram.impl;
 
+import com.carloprogram.dto.LoginRequest;
+import com.carloprogram.dto.LoginResponse;
 import com.carloprogram.exception.ResourceNotFoundException;
 import com.carloprogram.logging.LogExecution;
 import com.carloprogram.mapper.EmployeeMapper;
 import com.carloprogram.model.Employee;
 import com.carloprogram.model.EmployeeRole;
+import com.carloprogram.model.EmployeeUserPrincipal;
 import com.carloprogram.model.enums.EmploymentStatus;
 import com.carloprogram.repository.EmployeeRepository;
 import com.carloprogram.dto.EmployeeDto;
 import com.carloprogram.repository.EmployeeRoleRepository;
+import com.carloprogram.security.service.JwtService;
 import com.carloprogram.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,13 +39,45 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Autowired
     private EmployeeRoleRepository employeeRoleRepository;
 
-    //Add custom annotation, create logging
+    @Autowired
+    private JwtService jwtService;
+
+    @Autowired
+    private AuthenticationManager authManager;
+
+    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
+
+    @Override
+    public ResponseEntity<?> authenticateUser(LoginRequest loginRequest) {
+        try{
+            Authentication authentication = authManager
+                    .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername()
+                            , loginRequest.getPassword()));
+
+            EmployeeUserPrincipal userPrincipal = (EmployeeUserPrincipal) authentication.getPrincipal();
+
+            Employee employee = employeeRepository.findByUsername(userPrincipal.getUsername());
+            if(employee == null){
+                throw new UsernameNotFoundException("User not found");
+            }
+
+            EmployeeDto employeeDto = EmployeeMapper.mapToEmployeeDto(employee);
+
+            String token = jwtService.generateToken(userPrincipal);
+
+            return ResponseEntity.ok(new LoginResponse(token,employeeDto));
+
+        }catch(BadCredentialsException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
+        }
+    }
 
     @Transactional
     @LogExecution
-    @Override
+    @Override //Add a separate business logic for login
     public EmployeeDto createEmployee(EmployeeDto employeeDto) {
         Employee employee = EmployeeMapper.mapToEmployee(employeeDto);
+        employee.setPassword(null); // create a default password
         if (employeeDto.getEmployeeRoleIds() != null) {
             List<EmployeeRole> roles = employeeDto.getEmployeeRoleIds()
                     .stream()
