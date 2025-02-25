@@ -5,6 +5,7 @@ import com.carloprogram.model.Employee;
 import com.carloprogram.dto.EmployeeDto;
 import com.carloprogram.model.enums.EmploymentStatus;
 
+import java.security.SecureRandom;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,6 +24,7 @@ public class EmployeeMapper {
                 employee.getId(),
                 employee.getFirstName(),
                 employee.getLastName(),
+                employee.getUsername(), //can include password for view
                 employee.getAge(),
                 employee.getAddress(),
                 employee.getContactNumber(),
@@ -37,10 +39,17 @@ public class EmployeeMapper {
         employee.setId(employeeDto.getId());
         employee.setFirstName(employeeDto.getFirstName());
         employee.setLastName(employeeDto.getLastName());
+        employee.setUsername(generateUsername(employeeDto.getLastName())); //edit
         employee.setAge(employeeDto.getAge());
         employee.setAddress(employeeDto.getAddress());
         employee.setContactNumber(employeeDto.getContactNumber());
         employee.setEmploymentStatus(employeeDto.getEmploymentStatus());
         return employee;
+    }
+
+    private static String generateUsername (String lastName){
+        SecureRandom random = new SecureRandom();
+        int randomN = 1000 + random.nextInt(9000);
+        return lastName.toLowerCase() + randomN;
     }
 }
