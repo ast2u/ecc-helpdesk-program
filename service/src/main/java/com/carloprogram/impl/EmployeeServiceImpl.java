@@ -45,7 +45,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Autowired
     private AuthenticationManager authManager;
 
-    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
+    @Autowired
+    private BCryptPasswordEncoder encoder;
 
     @Override
     public ResponseEntity<?> authenticateUser(LoginRequest loginRequest) {
@@ -77,7 +78,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override //Add a separate business logic for login
     public EmployeeDto createEmployee(EmployeeDto employeeDto) {
         Employee employee = EmployeeMapper.mapToEmployee(employeeDto);
-        employee.setPassword(null); // create a default password
+        employee.setPassword(encoder.encode("Passw0rd123")); // create a default password
         if (employeeDto.getEmployeeRoleIds() != null) {
             List<EmployeeRole> roles = employeeDto.getEmployeeRoleIds()
                     .stream()
