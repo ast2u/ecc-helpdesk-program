@@ -23,7 +23,7 @@ public class EmployeeMapper {
                 employee.getId(),
                 employee.getFirstName(),
                 employee.getLastName(),
-                employee.getAge(),
+                employee.getBirthDate(),
                 employee.getAddress(),
                 employee.getContactNumber(),
                 employee.getEmploymentStatus(),
@@ -37,7 +37,7 @@ public class EmployeeMapper {
         employee.setId(employeeDto.getId());
         employee.setFirstName(employeeDto.getFirstName());
         employee.setLastName(employeeDto.getLastName());
-        employee.setAge(employeeDto.getAge());
+        employee.setBirthDate(employeeDto.getBirthDate());
         employee.setAddress(employeeDto.getAddress());
         employee.setContactNumber(employeeDto.getContactNumber());
         employee.setEmploymentStatus(employeeDto.getEmploymentStatus());

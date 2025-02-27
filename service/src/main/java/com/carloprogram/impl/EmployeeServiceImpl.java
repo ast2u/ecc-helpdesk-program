@@ -87,7 +87,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         employee.setFirstName(updatedEmployee.getFirstName());
         employee.setLastName(updatedEmployee.getLastName());
-        employee.setAge(updatedEmployee.getAge());
+        employee.setBirthDate(updatedEmployee.getBirthDate());
         employee.setAddress(updatedEmployee.getAddress());
         employee.setContactNumber(updatedEmployee.getContactNumber());
         employee.setEmploymentStatus(updatedEmployee.getEmploymentStatus());
