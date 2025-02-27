@@ -12,6 +12,10 @@ import com.carloprogram.repository.HelpTicketRepository;
 import com.carloprogram.service.TicketService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -46,8 +50,8 @@ public class TicketServiceImpl implements TicketService {
 
     @LogExecution
     @Override
-    public HelpTicketDto updateTicket(Long ticketNumber, HelpTicketDto helpTicketDto, Long updatedById) {
-        HelpTicket ticket = helpTicketRepository.findById(ticketNumber)
+    public HelpTicketDto updateTicket(Long id, HelpTicketDto helpTicketDto, Long updatedById) {
+        HelpTicket ticket = helpTicketRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Ticket not found"));
 
         Employee updatedBy = employeeRepository.findById(updatedById)
@@ -64,8 +68,8 @@ public class TicketServiceImpl implements TicketService {
 
     @LogExecution
     @Override
-    public HelpTicketDto assignTicket(Long ticketNumber, Long assigneeId) {
-        HelpTicket ticket = helpTicketRepository.findById(ticketNumber)
+    public HelpTicketDto assignTicket(Long id, Long assigneeId) {
+        HelpTicket ticket = helpTicketRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Ticket not found"));
 
         Employee assignee = employeeRepository.findById(assigneeId)
@@ -78,18 +82,20 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public List<HelpTicketDto> getAllTickets() {
-        return helpTicketRepository.findAll().stream()
-                .map(HelpTicketMapper::mapToTicketDto)
-                .collect(Collectors.toList());
+    public Page<HelpTicketDto> getAllTickets(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").ascending());
+
+        Page<HelpTicket> ticketPage = helpTicketRepository.findAll(pageable);
+
+        return ticketPage.map(HelpTicketMapper::mapToTicketDto);
     }
 
 
     @Override
-    public HelpTicketDto getTicketById(Long ticketNumber) {
-        HelpTicket ticket = helpTicketRepository.findById(ticketNumber)
-                .orElseThrow(()-> new ResourceNotFoundException("Ticket Number does not exists " +
-                        "with given ticket number: "+ticketNumber));
+    public HelpTicketDto getTicketById(Long id) {
+        HelpTicket ticket = helpTicketRepository.findById(id)
+                .orElseThrow(()-> new ResourceNotFoundException("Ticket id does not exists " +
+                        "with given ticket number: "+ id));
 
         return HelpTicketMapper.mapToTicketDto(ticket);
 
@@ -97,11 +103,11 @@ public class TicketServiceImpl implements TicketService {
 
     //Can only be deleted by an employee (to clarify can be deleted by admin)
     @Override
-    public void deleteTicketById(Long ticketNumber) {
-        HelpTicket ticket = helpTicketRepository.findById(ticketNumber)
+    public void deleteTicketById(Long id) {
+        HelpTicket ticket = helpTicketRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Ticket does not exists " +
-                                "with given Ticket Number: "+ ticketNumber));
+                                "with given Ticket Number: "+ id));
         helpTicketRepository.delete(ticket);
     }
 }
