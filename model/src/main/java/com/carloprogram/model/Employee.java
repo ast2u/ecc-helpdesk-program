@@ -52,11 +52,14 @@ public class Employee {
     )
     private List<EmployeeRole> employeeRoles = new ArrayList<>();
 
-    @OneToMany(mappedBy = "assignee", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "assignee")
     private Set<HelpTicket> assignedTickets = new HashSet<>();
 
-    @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "createdBy")
     private Set<HelpTicket> createdTickets = new HashSet<>();
+
+    @Column(name = "deleted", nullable = false)
+    private boolean deleted = false; // Default: Not deleted
 
     public void removeRole(EmployeeRole role){
         if(employeeRoles != null){
