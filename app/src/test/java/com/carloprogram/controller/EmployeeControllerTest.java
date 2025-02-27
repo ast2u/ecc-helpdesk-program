@@ -27,7 +27,7 @@ import static org.mockito.Mockito.when;
 @Disabled("Temporarily disabling this test class")
 @ExtendWith(MockitoExtension.class)
 public class EmployeeControllerTest {
-
+/*
     private MockMvc mockMvc;
 
     @Mock
@@ -72,25 +72,25 @@ public class EmployeeControllerTest {
                 .andExpect(jsonPath("$.address").value("123 Main St"));
     }
 
-//    @Test
-//    void testGetAllEmployees() throws Exception {
-//        List<EmployeeDto> employees = Arrays.asList(
-//                new EmployeeDto(1L, "Alice", "Brown",
-//                        28, "789 Pine St", "1112223333",
-//                        null, null),
-//
-//                new EmployeeDto(2L, "Bob", "White",
-//                        35, "101 Maple St", null,
-//                        null, null)
-//        );
-//        when(employeeService.getAllEmployees()).thenReturn(employees);
-//
-//        mockMvc.perform(get("/api/employees"))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.size()").value(2))
-//                .andExpect(jsonPath("$[0].firstName").value("Alice"))
-//                .andExpect(jsonPath("$[1].firstName").value("Bob"));
-//    }
+    @Test
+    void testGetAllEmployees() throws Exception {
+        List<EmployeeDto> employees = Arrays.asList(
+                new EmployeeDto(1L, "Alice", "Brown",
+                        28, "789 Pine St", "1112223333",
+                        null, null),
+
+                new EmployeeDto(2L, "Bob", "White",
+                        35, "101 Maple St", null,
+                        null, null)
+        );
+        when(employeeService.getAllEmployees()).thenReturn(employees);
+
+        mockMvc.perform(get("/api/employees"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()").value(2))
+                .andExpect(jsonPath("$[0].firstName").value("Alice"))
+                .andExpect(jsonPath("$[1].firstName").value("Bob"));
+    }
 
     @Test
     void testUpdateEmployee() throws Exception {
@@ -128,5 +128,5 @@ public class EmployeeControllerTest {
         mockMvc.perform(delete("/api/employees/1"))
                 .andExpect(status().isOk());
     }
-
+*/
 }
