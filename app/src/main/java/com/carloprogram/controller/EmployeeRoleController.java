@@ -3,6 +3,7 @@ package com.carloprogram.controller;
 
 import com.carloprogram.dto.EmployeeRoleDto;
 import com.carloprogram.service.EmployeeRoleService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,7 @@ public class EmployeeRoleController {
 
     //Build Create role Rest API
     @PostMapping
-    public ResponseEntity<EmployeeRoleDto> createEmployeeRole (@RequestBody EmployeeRoleDto employeeRoleDto){
+    public ResponseEntity<EmployeeRoleDto> createEmployeeRole (@Valid @RequestBody EmployeeRoleDto employeeRoleDto){
         EmployeeRoleDto savedEmployee = employeeRoleService.createEmployeeRole(employeeRoleDto);
         return new ResponseEntity<>(savedEmployee, HttpStatus.CREATED);
     }
@@ -40,7 +41,7 @@ public class EmployeeRoleController {
 
     //Build update role rest api
     @PutMapping("/{id}")
-    public ResponseEntity<EmployeeRoleDto> updateEmployeeRole(@PathVariable("id") Long employeeRoleId,@RequestBody EmployeeRoleDto updatedEmployeeRole){
+    public ResponseEntity<EmployeeRoleDto> updateEmployeeRole(@PathVariable("id") Long employeeRoleId,@Valid @RequestBody EmployeeRoleDto updatedEmployeeRole){
         EmployeeRoleDto employeeRoleDto = employeeRoleService.updateEmployeeRoleById(employeeRoleId, updatedEmployeeRole);
         return ResponseEntity.ok(employeeRoleDto);
     }

@@ -2,6 +2,7 @@ package com.carloprogram.dto;
 
 import com.carloprogram.model.TicketRemarks;
 import com.carloprogram.model.enums.TicketStatus;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,7 +18,11 @@ import java.util.List;
 public class HelpTicketDto {
     private Long id;
     private String ticketNumber;
+
+    @NotBlank(message = "Title is mandatory")
     private String title;
+
+    @NotBlank(message = "Body is mandatory")
     private String body;
     private TicketStatus status;
     private LocalDateTime createdDate;

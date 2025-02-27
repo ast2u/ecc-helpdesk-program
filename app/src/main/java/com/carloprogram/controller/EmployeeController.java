@@ -2,6 +2,7 @@ package com.carloprogram.controller;
 
 import com.carloprogram.dto.EmployeeDto;
 import com.carloprogram.service.EmployeeService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -19,7 +20,7 @@ public class EmployeeController {
 
     //Build App Employee Rest API
     @PostMapping
-    public ResponseEntity<EmployeeDto> createEmployee (@RequestBody EmployeeDto employeeDto){
+    public ResponseEntity<EmployeeDto> createEmployee (@Valid @RequestBody EmployeeDto employeeDto){
         EmployeeDto savedEmployee = employeeService.createEmployee(employeeDto);
         return new ResponseEntity<>(savedEmployee, HttpStatus.CREATED);
     }
@@ -43,7 +44,7 @@ public class EmployeeController {
 
     //Build update employee rest api
     @PutMapping("/{id}")
-    public ResponseEntity<EmployeeDto> updateEmployee(@PathVariable("id") Long employeeId,@RequestBody EmployeeDto updatedEmployee){
+    public ResponseEntity<EmployeeDto> updateEmployee(@PathVariable("id") Long employeeId,@Valid @RequestBody EmployeeDto updatedEmployee){
         EmployeeDto employeeDto = employeeService.updateEmployeeById(employeeId, updatedEmployee);
         return ResponseEntity.ok(employeeDto);
     }

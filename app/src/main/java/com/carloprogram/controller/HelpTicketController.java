@@ -3,6 +3,7 @@ package com.carloprogram.controller;
 import com.carloprogram.dto.EmployeeDto;
 import com.carloprogram.dto.HelpTicketDto;
 import com.carloprogram.service.TicketService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -23,21 +24,21 @@ public class HelpTicketController {
     private TicketService ticketService;
 
     @PostMapping("/create/{createdById}")
-    public ResponseEntity<HelpTicketDto> createTicket(@RequestBody HelpTicketDto ticketDto,
+    public ResponseEntity<HelpTicketDto> createTicket(@Valid @RequestBody HelpTicketDto ticketDto,
                                                       @PathVariable("createdById") Long createdById){
         return ResponseEntity.ok(ticketService.createTicket(ticketDto, createdById));
     }
 
-    @PutMapping("/update/{ticketNumber}/{updatedById}")
+    @PutMapping("/update/{id}/{updatedById}")
     public ResponseEntity<HelpTicketDto> updateTicket(@PathVariable("id") Long id,
-                                                  @RequestBody HelpTicketDto ticketDto,
+                                                  @Valid @RequestBody HelpTicketDto ticketDto,
                                                   @PathVariable("updatedById") Long updatedById) {
         return ResponseEntity.ok(ticketService.updateTicket(id, ticketDto, updatedById));
     }
 
 
 
-    @PutMapping("/assign/{ticketNumber}/{assigneeId}")
+    @PutMapping("/assign/{id}/{assigneeId}")
     public ResponseEntity<HelpTicketDto> assignTicket(@PathVariable("id") Long id,
                                                       @PathVariable("assigneeId") Long assigneeId) {
         return ResponseEntity.ok(ticketService.assignTicket(id, assigneeId));
