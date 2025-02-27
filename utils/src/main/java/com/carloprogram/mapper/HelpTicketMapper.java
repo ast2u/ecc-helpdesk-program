@@ -21,6 +21,7 @@ public class HelpTicketMapper {
 
 
         return new HelpTicketDto(
+                ticket.getId(),
                 ticket.getTicketNumber(),
                 ticket.getTicketTitle(),
                 ticket.getBody(),
@@ -36,6 +37,7 @@ public class HelpTicketMapper {
 
     public static HelpTicket mapToTicket(HelpTicketDto dto, Employee assignee, Employee createdBy, Employee updatedBy, List<TicketRemarks> ticketRemarks) {
         return new HelpTicket(
+                dto.getId(),
                 dto.getTicketNumber(),
                 dto.getTitle(),
                 dto.getBody(),

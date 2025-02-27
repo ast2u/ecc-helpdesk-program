@@ -15,7 +15,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class HelpTicketDto {
-    private Long ticketNumber;
+    private Long id;
+    private String ticketNumber;
     private String title;
     private String body;
     private TicketStatus status;

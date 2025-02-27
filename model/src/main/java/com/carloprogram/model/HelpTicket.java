@@ -11,6 +11,7 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -22,8 +23,10 @@ public class HelpTicket {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ticket_number")
-    private Long ticketNumber;
+    private Long id;
+
+    @Column(name = "ticket_number", unique = true, nullable = false, updatable = false)
+    private String ticketNumber;
 
     @Column(nullable = false)
     private String ticketTitle;
@@ -54,5 +57,12 @@ public class HelpTicket {
 
     @OneToMany(mappedBy = "ticketNumber", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TicketRemarks> remarks = new ArrayList<>();
+
+    @PrePersist
+    public void generateTicketNumber() {
+        if (this.ticketNumber == null) {
+            this.ticketNumber = UUID.randomUUID().toString();
+        }
+    }
 
 }
