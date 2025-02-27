@@ -3,6 +3,7 @@ package com.carloprogram.controller;
 import com.carloprogram.dto.EmployeeDto;
 import com.carloprogram.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,8 +33,11 @@ public class EmployeeController {
 
     //Build get all employees rest api
     @GetMapping
-    public ResponseEntity<List<EmployeeDto>> getEmployees(){
-        List<EmployeeDto> employees = employeeService.getAllEmployees();
+    public ResponseEntity<Page<EmployeeDto>> getAllEmployees(
+            @RequestParam(defaultValue = "0", name = "page") int page,
+            @RequestParam(defaultValue = "3", name = "size") int size) {
+
+        Page<EmployeeDto> employees = employeeService.getAllEmployees(page, size);
         return ResponseEntity.ok(employees);
     }
 
@@ -57,7 +61,7 @@ public class EmployeeController {
     public ResponseEntity<String> deleteEmployee(@PathVariable("id") Long employeeId){
         try {
             employeeService.deleteEmployeeById(employeeId);
-            return ResponseEntity.ok("Employee with ID " + employeeId + " deleted successfully.");
+            return ResponseEntity.ok("Employee#" + employeeId + " marked as deleted");
         } catch (RuntimeException ex) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: " + ex.getMessage());
         }

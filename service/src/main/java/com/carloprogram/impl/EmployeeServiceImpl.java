@@ -11,6 +11,10 @@ import com.carloprogram.dto.EmployeeDto;
 import com.carloprogram.repository.EmployeeRoleRepository;
 import com.carloprogram.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,7 +59,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public EmployeeDto getEmployeeById(Long employeeId) {
-        Employee employee = employeeRepository.findById(employeeId)
+        Employee employee = employeeRepository.findByIdAndDeletedFalse(employeeId)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Employee does not exists " +
                                 "with given id: " + employeeId));
@@ -64,12 +68,12 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public List<EmployeeDto> getAllEmployees() {
-        List<Employee> employees = employeeRepository.findAll();
+    public Page<EmployeeDto> getAllEmployees(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").ascending());
 
-        return employees.stream()
-                .map(EmployeeMapper::mapToEmployeeDto)
-                .collect(Collectors.toList());
+        Page<Employee> employeePage = employeeRepository.findByDeletedFalse(pageable);
+
+        return employeePage.map(EmployeeMapper::mapToEmployeeDto);
     }
 
     @Transactional
@@ -110,7 +114,8 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Employee does not exists " +
                                 "with given id: "+ employeeId));
-        employeeRepository.delete(employee);
+        employee.setDeleted(true);
+        employeeRepository.save(employee);
     }
 
     @Override
