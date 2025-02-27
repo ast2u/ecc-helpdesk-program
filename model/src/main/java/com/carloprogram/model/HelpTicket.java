@@ -55,7 +55,7 @@ public class HelpTicket {
     @JoinColumn(name = "updated_by")
     private Employee updatedBy;
 
-    @OneToMany(mappedBy = "ticketNumber", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "ticketId", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TicketRemarks> remarks = new ArrayList<>();
 
     @PrePersist

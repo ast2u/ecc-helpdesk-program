@@ -21,8 +21,8 @@ public class TicketRemarks {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "ticket_number", nullable = false) // Many Remarks to One Ticket
-    private HelpTicket ticketNumber;
+    @JoinColumn(name = "ticketId", nullable = false) // Many Remarks to One Ticket
+    private HelpTicket ticketId;
 
     @ManyToOne
     @JoinColumn(name = "employee_id", nullable = false) // Many Remarks to One Employee

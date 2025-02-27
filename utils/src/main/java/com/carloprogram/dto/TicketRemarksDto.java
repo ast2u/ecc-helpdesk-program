@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class TicketRemarksDto {
     private Long id;
-    private Long ticketNumber;
+    private Long ticketId;
     private Long employeeId;
     private String comment;
     private LocalDateTime createdDate;

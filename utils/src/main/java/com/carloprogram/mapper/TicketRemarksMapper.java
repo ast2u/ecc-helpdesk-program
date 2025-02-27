@@ -9,7 +9,7 @@ public class TicketRemarksMapper {
     public static TicketRemarksDto mapToTicketRemarksDto(TicketRemarks ticketRemarks) {
         return new TicketRemarksDto(
                 ticketRemarks.getId(),
-                ticketRemarks.getTicketNumber() != null ? ticketRemarks.getTicketNumber().getTicketNumber() : null,
+                ticketRemarks.getTicketId().getId(),
                 ticketRemarks.getEmployeeId() != null ? ticketRemarks.getEmployeeId().getId() : null,
                 ticketRemarks.getComment(),
                 ticketRemarks.getCreatedDate()

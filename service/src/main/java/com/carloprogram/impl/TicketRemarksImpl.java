@@ -53,7 +53,7 @@ public class TicketRemarksImpl implements TicketRemarksService {
         HelpTicket ticket = helpTicketRepository.findById(ticketId)
                 .orElseThrow(() -> new ResourceNotFoundException("Ticket not found with ticketNumber: " + ticketId));
 
-        List<TicketRemarks> remarks = ticketRemarksRepository.findByTicketNumber(ticket);
+        List<TicketRemarks> remarks = ticketRemarksRepository.findByTicketId(ticket);
 
         return remarks.stream()
                 .map(TicketRemarksMapper::mapToTicketRemarksDto)
