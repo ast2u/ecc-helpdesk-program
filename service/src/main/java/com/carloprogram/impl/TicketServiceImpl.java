@@ -5,6 +5,7 @@ import com.carloprogram.exception.ResourceNotFoundException;
 import com.carloprogram.logging.LogExecution;
 import com.carloprogram.mapper.HelpTicketMapper;
 import com.carloprogram.model.Employee;
+import com.carloprogram.specification.TicketSpecification;
 import com.carloprogram.model.HelpTicket;
 import com.carloprogram.model.enums.TicketStatus;
 import com.carloprogram.repository.EmployeeRepository;
@@ -16,8 +17,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -90,6 +93,37 @@ public class TicketServiceImpl implements TicketService {
         return ticketPage.map(HelpTicketMapper::mapToTicketDto);
     }
 
+    public Page<HelpTicket> searchTickets(Integer page, Integer size,
+                                          String status, Long createdBy, Long updatedBy,
+                                          Long assignee, LocalDateTime createdStart, LocalDateTime createdEnd,
+                                          LocalDateTime updatedStart, LocalDateTime updatedEnd){
+        Specification<HelpTicket> spec = Specification.where(null);
+
+        if (status != null) {
+            spec = spec.and(TicketSpecification.hasStatus(TicketStatus.valueOf(status)));
+        }
+
+        if (createdBy != null && createdBy > 0) {
+            spec = spec.and(TicketSpecification.createdBy(createdBy));
+        }
+        if (updatedBy != null && updatedBy > 0) {
+            spec = spec.and(TicketSpecification.updatedBy(updatedBy));
+        }
+        if (assignee != null && assignee > 0) {
+            spec = spec.and(TicketSpecification.assignedTo(assignee));
+        }
+        if (createdStart != null && createdEnd != null) {
+            spec = spec.and(TicketSpecification.createdBetween(createdStart, createdEnd));
+        }
+        if (updatedStart != null && updatedEnd != null) {
+            spec = spec.and(TicketSpecification.updatedBetween(updatedStart, updatedEnd));
+        }
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        return helpTicketRepository.findAll(spec, pageable);
+    }
+
 
     @Override
     public HelpTicketDto getTicketById(Long id) {
@@ -102,6 +136,7 @@ public class TicketServiceImpl implements TicketService {
     }
 
     //Can only be deleted by an employee (to clarify can be deleted by admin)
+    // Removed?
     @Override
     public void deleteTicketById(Long id) {
         HelpTicket ticket = helpTicketRepository.findById(id)

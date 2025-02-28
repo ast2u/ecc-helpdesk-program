@@ -1,16 +1,18 @@
 package com.carloprogram.controller;
 
-import com.carloprogram.dto.EmployeeDto;
 import com.carloprogram.dto.HelpTicketDto;
+import com.carloprogram.mapper.HelpTicketMapper;
+import com.carloprogram.model.HelpTicket;
 import com.carloprogram.service.TicketService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/api/tickets")
@@ -47,10 +49,26 @@ public class HelpTicketController {
     @GetMapping
     public ResponseEntity<Page<HelpTicketDto>> getAllTickets(
             @RequestParam(defaultValue = "0", name = "page") int page,
-            @RequestParam(defaultValue = "3", name = "size") int size) {
+            @RequestParam(defaultValue = "4", name = "size") int size) {
 
         Page<HelpTicketDto> helpTicket = ticketService.getAllTickets(page, size);
         return ResponseEntity.ok(helpTicket);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<Page<HelpTicketDto>> getFilteredTickets(@RequestParam(defaultValue = "0", name = "page") int page,
+                                                                  @RequestParam(defaultValue = "4", name = "size") int size,
+                                                                  @RequestParam(required = false, name = "status") String status,
+                                                                  @RequestParam(required = false, name = "createdBy") Long createdBy,
+                                                                  @RequestParam(required = false, name = "updatedBy") Long updatedBy,
+                                                                  @RequestParam(required = false, name = "assignee") Long assignee,
+                                                                  @RequestParam(required = false, name = "createdStart") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime createdStart,
+                                                                  @RequestParam(required = false, name = "createdEnd") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime createdEnd,
+                                                                  @RequestParam(required = false, name = "updatedStart") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime updatedStart,
+                                                                  @RequestParam(required = false, name = "updatedEnd") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime updatedEnd){
+        Page<HelpTicket> tickets = ticketService.searchTickets(page, size, status, createdBy, updatedBy, assignee, createdStart, createdEnd, updatedStart, updatedEnd);
+        Page<HelpTicketDto> ticketDtos = tickets.map(HelpTicketMapper::mapToTicketDto);
+        return ResponseEntity.ok(ticketDtos);
     }
 
     @GetMapping("/{id}")
