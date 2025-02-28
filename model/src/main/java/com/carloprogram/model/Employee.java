@@ -32,10 +32,16 @@ public class Employee {
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
+    @Column(nullable = false, unique = true)
+    private String username;
+
+    @Column(nullable = false)
+    private String password;
+
     @Column(name = "birth_date", nullable = false)
     private LocalDate birthDate;
-
-    @Column(name = "address", nullable = false)
+    
+    @Column(nullable = false)
     private String address;
 
     @Column(name = "contact_number")

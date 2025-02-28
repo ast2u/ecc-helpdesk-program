@@ -33,6 +33,8 @@ public class EmployeeDto {
     @Past(message = "Birth date must be in the past")
     private LocalDate birthDate;
 
+    private String username;
+
     @NotBlank(message = "Address is mandatory")
     private String address;
 

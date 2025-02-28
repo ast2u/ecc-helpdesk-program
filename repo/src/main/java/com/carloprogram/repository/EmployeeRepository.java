@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
+
+    Employee findByUsername(String username);
+
     Optional<Employee> findByIdAndDeletedFalse(Long id);
 
     Page<Employee> findByDeletedFalse(Pageable pageable);
