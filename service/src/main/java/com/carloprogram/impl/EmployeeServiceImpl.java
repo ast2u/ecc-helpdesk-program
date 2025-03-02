@@ -62,10 +62,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
             EmployeeUserPrincipal userPrincipal = (EmployeeUserPrincipal) authentication.getPrincipal();
 
-            Employee employee = employeeRepository.findByUsername(userPrincipal.getUsername());
-            if(employee == null){
-                throw new UsernameNotFoundException("User not found");
-            }
+            Employee employee = employeeRepository.findByUsername(userPrincipal.getUsername())
+                    .orElseThrow(() -> new UsernameNotFoundException("Employee not found"));
 
             EmployeeDto employeeDto = EmployeeMapper.mapToEmployeeDto(employee);
 
@@ -103,8 +101,11 @@ public class EmployeeServiceImpl implements EmployeeService {
         return EmployeeMapper.mapToEmployeeDto(savedEmployee);
     }
 
+    //Create another dto for employee profile
     @Override
-    public EmployeeDto getEmployeeById(Long employeeId) {
+    public EmployeeDto getEmployeeProfile(Authentication authentication) {
+        EmployeeUserPrincipal userPrincipal = (EmployeeUserPrincipal) authentication.getPrincipal();
+        Long employeeId = userPrincipal.getEmployee().getId();
         Employee employee = employeeRepository.findByIdAndDeletedFalse(employeeId)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Employee does not exists " +
@@ -113,11 +114,22 @@ public class EmployeeServiceImpl implements EmployeeService {
         return EmployeeMapper.mapToEmployeeDto(employee);
     }
 
+    // Will be deleted!
+//    @Override
+//    public EmployeeDto getEmployeeById(Long employeeId) {
+//        Employee employee = employeeRepository.findByIdAndDeletedFalse(employeeId)
+//                .orElseThrow(() ->
+//                        new ResourceNotFoundException("Employee does not exists " +
+//                                "with given id: " + employeeId));
+//
+//        return EmployeeMapper.mapToEmployeeDto(employee);
+//    }
+
     @Override
     public Page<EmployeeDto> getAllEmployees(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").ascending());
 
-        Page<Employee> employeePage = employeeRepository.findByDeletedFalse(pageable);
+        Page<Employee> employeePage = employeeRepository.findAll(pageable);
 
         return employeePage.map(EmployeeMapper::mapToEmployeeDto);
     }
