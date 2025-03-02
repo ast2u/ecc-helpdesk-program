@@ -29,17 +29,17 @@ public class EmployeeDto {
     @NotBlank(message = "Last name is mandatory")
     private String lastName;
 
+    private String username;
+
     @NotNull(message = "Birth date is mandatory")
     @Past(message = "Birth date must be in the past")
     private LocalDate birthDate;
-
-    private String username;
 
     @NotBlank(message = "Address is mandatory")
     private String address;
 
     private String contactNumber;
     private EmploymentStatus employmentStatus;
-    private List<EmployeeRoleDto> employeeRoleIds = new ArrayList<>();
+    private List<EmployeeRoleDto> employeeRoles = new ArrayList<>();
 
 }

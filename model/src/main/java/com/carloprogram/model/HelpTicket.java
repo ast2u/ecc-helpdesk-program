@@ -29,7 +29,7 @@ public class HelpTicket {
     private String ticketNumber;
 
     @Column(nullable = false)
-    private String ticketTitle;
+    private String title;
 
     @Column(columnDefinition = "TEXT", nullable = false)
     private String body;

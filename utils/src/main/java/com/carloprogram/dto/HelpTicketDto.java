@@ -27,8 +27,8 @@ public class HelpTicketDto {
     private TicketStatus status;
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
-    private EmployeeDto assigneeId;
-    private EmployeeDto createdById;
-    private EmployeeDto updatedById;
+    private EmployeeDto assignee;
+    private EmployeeDto createdBy;
+    private EmployeeDto updatedBy;
     private List<TicketRemarksDto> remarks;
 }
