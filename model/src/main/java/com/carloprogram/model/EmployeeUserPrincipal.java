@@ -1,5 +1,6 @@
 package com.carloprogram.model;
 
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,9 +18,15 @@ public class EmployeeUserPrincipal implements UserDetails {
         this.employee = employee;
     }
 
+    public Employee getEmployee() {
+        return employee;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority("USER")); //fix for RBAC
+        return employee.getEmployeeRoles().stream()
+                .map(employeeRole -> new SimpleGrantedAuthority(employeeRole.getRole_title()))
+                .collect(Collectors.toList());
     }
 
     @Override
