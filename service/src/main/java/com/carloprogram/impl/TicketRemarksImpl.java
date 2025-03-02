@@ -5,6 +5,7 @@ import com.carloprogram.exception.ResourceNotFoundException;
 import com.carloprogram.logging.LogExecution;
 import com.carloprogram.mapper.TicketRemarksMapper;
 import com.carloprogram.model.Employee;
+import com.carloprogram.model.EmployeeUserPrincipal;
 import com.carloprogram.model.HelpTicket;
 import com.carloprogram.model.TicketRemarks;
 import com.carloprogram.repository.EmployeeRepository;
@@ -36,16 +37,15 @@ public class TicketRemarksImpl implements TicketRemarksService {
     @Transactional
     @LogExecution
     @Override
-    public TicketRemarksDto addRemark(TicketRemarksDto ticketRemarksDto, Long ticketNumber, Long employeeId) {
+    public TicketRemarksDto addRemark(TicketRemarksDto ticketRemarksDto, Long ticketNumber, EmployeeUserPrincipal employeeUserPrincipal) {
         HelpTicket ticket = helpTicketRepository.findById(ticketNumber)
                 .orElseThrow(() -> new ResourceNotFoundException("Ticket not found with ticketNumber: " + ticketNumber));
 
-        Employee employee = employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with ID: " + employeeId));
+        Employee currentUser = employeeUserPrincipal.getEmployee();
 
         TicketRemarks remark = ticketRemarksMapper.mapToTicketRemarks(ticketRemarksDto);
         remark.setTicketId(ticket);
-        remark.setEmployeeId(employee);
+        remark.setEmployeeId(currentUser);
 
         TicketRemarks savedRemark = ticketRemarksRepository.save(remark);
 

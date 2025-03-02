@@ -1,10 +1,12 @@
 package com.carloprogram.controller;
 
 import com.carloprogram.dto.TicketRemarksDto;
+import com.carloprogram.model.EmployeeUserPrincipal;
 import com.carloprogram.service.TicketRemarksService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,12 +18,12 @@ public class TicketRemarksController {
     @Autowired
     private TicketRemarksService ticketRemarkService;
 
-    @PostMapping("/{employeeId}")
+    @PostMapping("/add")
     public ResponseEntity<TicketRemarksDto> createRemark(
             @Valid @RequestBody TicketRemarksDto ticketRemarksDto,
             @PathVariable("ticketId") Long ticketNumber,
-            @PathVariable("employeeId") Long employeeId) {
-        return ResponseEntity.ok(ticketRemarkService.addRemark(ticketRemarksDto,ticketNumber,employeeId));
+            @AuthenticationPrincipal EmployeeUserPrincipal userPrincipal) {
+        return ResponseEntity.ok(ticketRemarkService.addRemark(ticketRemarksDto,ticketNumber, userPrincipal));
     }
 
     @GetMapping
