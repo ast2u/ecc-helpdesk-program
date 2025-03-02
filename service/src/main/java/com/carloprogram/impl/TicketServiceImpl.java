@@ -6,6 +6,7 @@ import com.carloprogram.exception.ResourceNotFoundException;
 import com.carloprogram.logging.LogExecution;
 import com.carloprogram.mapper.HelpTicketMapper;
 import com.carloprogram.model.Employee;
+import com.carloprogram.model.EmployeeUserPrincipal;
 import com.carloprogram.model.TicketRemarks;
 import com.carloprogram.specification.TicketSpecification;
 import com.carloprogram.model.HelpTicket;
@@ -37,8 +38,8 @@ public class TicketServiceImpl implements TicketService {
     @LogExecution
     @Transactional
     @Override
-    public HelpTicketDto createTicket(HelpTicketDto helpTicketDto, Long createdById) {
-        Employee createdBy = employeeRepository.findById(createdById)
+    public HelpTicketDto createTicket(HelpTicketDto helpTicketDto, EmployeeUserPrincipal employeeUserPrincipal) {
+        Employee createdBy = employeeRepository.findById(employeeUserPrincipal.getEmployee().getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Employee not found"));
 
         HelpTicket ticket = ticketMapper.mapToTicket(helpTicketDto);
@@ -58,11 +59,11 @@ public class TicketServiceImpl implements TicketService {
 
     @LogExecution
     @Override
-    public HelpTicketDto updateTicket(Long id, HelpTicketDto helpTicketDto, Long updatedById) {
+    public HelpTicketDto updateTicket(Long id, HelpTicketDto helpTicketDto, EmployeeUserPrincipal userPrincipal) {
         HelpTicket ticket = helpTicketRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Ticket not found"));
 
-        Employee updatedBy = employeeRepository.findById(updatedById)
+        Employee updatedBy = employeeRepository.findById(userPrincipal.getEmployee().getId())
                 .orElseThrow(() -> new RuntimeException("Updater not found"));
 
         ticket.setTitle(helpTicketDto.getTitle());
@@ -76,14 +77,19 @@ public class TicketServiceImpl implements TicketService {
 
     @LogExecution
     @Override
-    public HelpTicketDto assignTicket(Long id, Long assigneeId) {
+    public HelpTicketDto assignTicket(Long id, Long assigneeId, EmployeeUserPrincipal userPrincipal) {
         HelpTicket ticket = helpTicketRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Ticket not found"));
 
         Employee assignee = employeeRepository.findById(assigneeId)
                 .orElseThrow(() -> new RuntimeException("Assignee not found"));
 
+        Employee updatedBy = employeeRepository.findById(userPrincipal.getEmployee().getId())
+                .orElseThrow(() -> new RuntimeException("Updater not found"));
+
         ticket.setAssignee(assignee);
+        ticket.setUpdatedBy(updatedBy);
+
         ticket = helpTicketRepository.save(ticket);
 
         return ticketMapper.mapToTicketDto(ticket);

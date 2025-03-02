@@ -2,12 +2,14 @@ package com.carloprogram.controller;
 
 import com.carloprogram.dto.HelpTicketDto;
 import com.carloprogram.dto.search.TicketSearchRequest;
+import com.carloprogram.model.EmployeeUserPrincipal;
 import com.carloprogram.service.TicketService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,25 +23,26 @@ public class HelpTicketController {
     @Autowired
     private TicketService ticketService;
 
-    @PostMapping("/create/{createdById}")
+    @PostMapping("/create")
     public ResponseEntity<HelpTicketDto> createTicket(@Valid @RequestBody HelpTicketDto ticketDto,
-                                                      @PathVariable("createdById") Long createdById){
-        return ResponseEntity.ok(ticketService.createTicket(ticketDto, createdById));
+                                                      @AuthenticationPrincipal EmployeeUserPrincipal userPrincipal) {
+        return ResponseEntity.ok(ticketService.createTicket(ticketDto, userPrincipal));
     }
 
-    @PutMapping("/update/{id}/{updatedById}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<HelpTicketDto> updateTicket(@PathVariable("id") Long id,
-                                                  @Valid @RequestBody HelpTicketDto ticketDto,
-                                                  @PathVariable("updatedById") Long updatedById) {
-        return ResponseEntity.ok(ticketService.updateTicket(id, ticketDto, updatedById));
+                                                      @Valid @RequestBody HelpTicketDto ticketDto,
+                                                      @AuthenticationPrincipal EmployeeUserPrincipal userPrincipal) {
+        return ResponseEntity.ok(ticketService.updateTicket(id, ticketDto, userPrincipal));
     }
 
 
 
     @PutMapping("/assign/{id}/{assigneeId}")
     public ResponseEntity<HelpTicketDto> assignTicket(@PathVariable("id") Long id,
-                                                      @PathVariable("assigneeId") Long assigneeId) {
-        return ResponseEntity.ok(ticketService.assignTicket(id, assigneeId));
+                                                      @PathVariable("assigneeId") Long assigneeId,
+                                                      @AuthenticationPrincipal EmployeeUserPrincipal userPrincipal) {
+        return ResponseEntity.ok(ticketService.assignTicket(id, assigneeId, userPrincipal));
     }
 
     @GetMapping
