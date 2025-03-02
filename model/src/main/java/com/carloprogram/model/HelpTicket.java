@@ -19,7 +19,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Entity
 @Table(name = "help_tickets")
-public class HelpTicket {
+public class HelpTicket extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,23 +37,9 @@ public class HelpTicket {
     @Column(nullable = false)
     private TicketStatus status;
 
-    @CreationTimestamp
-    private LocalDateTime createdDate;
-
-    @UpdateTimestamp
-    private LocalDateTime updatedDate;
-
     @ManyToOne
     @JoinColumn(name = "assignee_id")
     private Employee assignee;
-
-    @ManyToOne
-    @JoinColumn(name = "created_by", updatable = false)
-    private Employee createdBy;
-
-    @ManyToOne
-    @JoinColumn(name = "updated_by")
-    private Employee updatedBy;
 
     @OneToMany(mappedBy = "ticketId", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TicketRemarks> remarks = new ArrayList<>();

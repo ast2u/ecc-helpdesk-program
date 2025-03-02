@@ -15,7 +15,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class HelpTicketDto {
+public class HelpTicketDto extends BaseDto {
     private Long id;
     private String ticketNumber;
 
@@ -25,10 +25,6 @@ public class HelpTicketDto {
     @NotBlank(message = "Body is mandatory")
     private String body;
     private TicketStatus status;
-    private LocalDateTime createdDate;
-    private LocalDateTime updatedDate;
     private EmployeeDto assignee;
-    private EmployeeDto createdBy;
-    private EmployeeDto updatedBy;
     private List<TicketRemarksDto> remarks;
 }
