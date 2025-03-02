@@ -14,11 +14,15 @@ public interface EmployeeMapper {
 
     EmployeeMapper INSTANCE = Mappers.getMapper(EmployeeMapper.class);
 
+    @Mapping(target = "createdBy", source = "createdBy", qualifiedByName = "mapEmployeeToId")
+    @Mapping(target = "updatedBy", source = "updatedBy", qualifiedByName = "mapEmployeeToId")
     EmployeeDto mapToEmployeeDto(Employee employee);
 
     @Mapping(source = "lastName", target = "username", qualifiedByName = "generateUsername")
     @Mapping(target = "password", ignore = true)
     @Mapping(target = "deleted", ignore = true)
+    @Mapping(target = "createdBy", ignore = true)
+    @Mapping(target = "updatedBy", ignore = true)
     @Mapping(target = "assignedTickets", ignore = true)
     @Mapping(target = "createdTickets", ignore = true)
     Employee mapToEmployee(EmployeeDto employeeDto);
@@ -29,5 +33,10 @@ public interface EmployeeMapper {
         int randomN = 100 + random.nextInt(900);
         String halfLastName = lastName.substring(0, (lastName.length() + 1) / 2).toLowerCase();
         return halfLastName + randomN;
+    }
+
+    @Named("mapEmployeeToId")
+    static Long mapEmployeeToId(Employee employee) {
+        return (employee != null) ? employee.getId() : null;
     }
 }
