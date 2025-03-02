@@ -1,53 +1,22 @@
 package com.carloprogram.mapper;
 
-import com.carloprogram.dto.EmployeeDto;
 import com.carloprogram.dto.HelpTicketDto;
-import com.carloprogram.dto.TicketRemarksDto;
-import com.carloprogram.model.Employee;
 import com.carloprogram.model.HelpTicket;
-import com.carloprogram.model.TicketRemarks;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.factory.Mappers;
 
-import java.util.List;
-import java.util.stream.Collectors;
+@Mapper(componentModel = "spring", uses = {EmployeeMapper.class, TicketRemarksMapper.class})
+public interface HelpTicketMapper {
 
-public class HelpTicketMapper {
-    public static HelpTicketDto mapToTicketDto(HelpTicket ticket) {
-        List<TicketRemarksDto> remarkDtos = (ticket.getRemarks() != null) ?
-                ticket.getRemarks()
-                        .stream()
-                        .map(TicketRemarksMapper::mapToTicketRemarksDto)
-                        .collect(Collectors.toList())
-                : null;
+    HelpTicketMapper INSTANCE = Mappers.getMapper(HelpTicketMapper.class);
 
+    HelpTicketDto mapToTicketDto(HelpTicket ticket);
 
-        return new HelpTicketDto(
-                ticket.getId(),
-                ticket.getTicketNumber(),
-                ticket.getTicketTitle(),
-                ticket.getBody(),
-                ticket.getStatus(),
-                ticket.getCreatedDate(),
-                ticket.getUpdatedDate(),
-                ticket.getAssignee() != null ? EmployeeMapper.mapToEmployeeDto(ticket.getAssignee()) : null,
-                EmployeeMapper.mapToEmployeeDto(ticket.getCreatedBy()),
-                ticket.getUpdatedBy() != null ? EmployeeMapper.mapToEmployeeDto(ticket.getUpdatedBy()) : null,
-                remarkDtos
-        );
-    }
+    @Mapping(target = "assignee", ignore = true)
+    @Mapping(target = "createdBy", ignore = true)
+    @Mapping(target = "updatedBy", ignore = true)
+    @Mapping(target = "remarks", ignore = true)
+    HelpTicket mapToTicket(HelpTicketDto dto);
 
-    public static HelpTicket mapToTicket(HelpTicketDto dto, Employee assignee, Employee createdBy, Employee updatedBy, List<TicketRemarks> ticketRemarks) {
-        return new HelpTicket(
-                dto.getId(),
-                dto.getTicketNumber(),
-                dto.getTitle(),
-                dto.getBody(),
-                dto.getStatus(),
-                dto.getCreatedDate(),
-                dto.getUpdatedDate(),
-                assignee,
-                createdBy,
-                updatedBy,
-                ticketRemarks
-        );
-    }
 }

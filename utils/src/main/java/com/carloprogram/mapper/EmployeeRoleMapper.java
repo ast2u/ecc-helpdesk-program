@@ -1,28 +1,19 @@
 package com.carloprogram.mapper;
 
-
 import com.carloprogram.dto.EmployeeRoleDto;
 import com.carloprogram.model.EmployeeRole;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.factory.Mappers;
 
-import java.util.Set;
+@Mapper(componentModel = "spring")
+public interface EmployeeRoleMapper {
 
-public class EmployeeRoleMapper {
-    public static EmployeeRoleDto mapToEmployeeRoleDto(EmployeeRole employeeRole){
-        return new EmployeeRoleDto(
-                employeeRole.getId(),
-                employeeRole.getRole_title(),
-                employeeRole.getRole_description()
-        );
-    }
+    EmployeeRoleMapper INSTANCE = Mappers.getMapper(EmployeeRoleMapper.class);
 
-    public static EmployeeRole mapToEmployeeRole(EmployeeRoleDto employeeRoleDto){
-        return new EmployeeRole(
-                employeeRoleDto.getId(),
-                employeeRoleDto.getRole_title(),
-                employeeRoleDto.getRole_description(),
-                Set.of()
-        );
-    }
+    EmployeeRoleDto mapToEmployeeRoleDto(EmployeeRole employeeRole);
 
+    @Mapping(target = "employees", ignore = true)
+    EmployeeRole mapToEmployeeRole(EmployeeRoleDto employeeRoleDto);
 
 }

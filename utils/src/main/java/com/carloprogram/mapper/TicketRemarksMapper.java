@@ -1,28 +1,21 @@
 package com.carloprogram.mapper;
 
 import com.carloprogram.dto.TicketRemarksDto;
-import com.carloprogram.model.Employee;
-import com.carloprogram.model.HelpTicket;
 import com.carloprogram.model.TicketRemarks;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.factory.Mappers;
 
-public class TicketRemarksMapper {
-    public static TicketRemarksDto mapToTicketRemarksDto(TicketRemarks ticketRemarks) {
-        return new TicketRemarksDto(
-                ticketRemarks.getId(),
-                ticketRemarks.getTicketId().getId(),
-                ticketRemarks.getEmployeeId() != null ? ticketRemarks.getEmployeeId().getId() : null,
-                ticketRemarks.getComment(),
-                ticketRemarks.getCreatedDate()
-        );
-    }
+@Mapper(componentModel = "spring")
+public interface TicketRemarksMapper {
 
-    public static TicketRemarks mapToTicketRemarks(TicketRemarksDto dto, HelpTicket ticketNumber, Employee employeeId) {
-        return new TicketRemarks(
-                dto.getId(),
-                ticketNumber,
-                employeeId,
-                dto.getComment(),
-                dto.getCreatedDate()
-        );
-    }
+    TicketRemarksMapper INSTANCE = Mappers.getMapper(TicketRemarksMapper.class);
+
+    @Mapping(source = "ticketId.id", target = "ticketId")
+    @Mapping(source = "employeeId.id", target = "employeeId")
+    TicketRemarksDto mapToTicketRemarksDto(TicketRemarks ticketRemarks);
+
+    @Mapping(target = "ticketId", ignore = true)
+    @Mapping(target = "employeeId", ignore = true)
+    TicketRemarks mapToTicketRemarks(TicketRemarksDto dto);
 }

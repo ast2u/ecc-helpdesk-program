@@ -1,53 +1,30 @@
 package com.carloprogram.mapper;
 
-import com.carloprogram.dto.EmployeeRoleDto;
 import com.carloprogram.model.Employee;
 import com.carloprogram.dto.EmployeeDto;
-import com.carloprogram.model.enums.EmploymentStatus;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
+import org.mapstruct.factory.Mappers;
 
 import java.security.SecureRandom;
-import java.util.List;
-import java.util.stream.Collectors;
 
-public class EmployeeMapper {
+@Mapper(componentModel = "spring", uses = EmployeeRoleMapper.class)
+public interface EmployeeMapper {
 
-    public static EmployeeDto mapToEmployeeDto(Employee employee){
+    EmployeeMapper INSTANCE = Mappers.getMapper(EmployeeMapper.class);
 
-        List<EmployeeRoleDto> employeeRoleDtos = (employee.getEmployeeRoles() != null) ?
-                employee.getEmployeeRoles()
-                        .stream()
-                        .map(EmployeeRoleMapper::mapToEmployeeRoleDto)
-                        .collect(Collectors.toList())
-                : null;
+    EmployeeDto mapToEmployeeDto(Employee employee);
 
-        return new EmployeeDto(
-                employee.getId(),
-                employee.getFirstName(),
-                employee.getLastName(),
-                employee.getBirthDate(),
-                employee.getUsername(), //can include password for view
-                employee.getAddress(),
-                employee.getContactNumber(),
-                employee.getEmploymentStatus(),
-                employeeRoleDtos
+    @Mapping(source = "lastName", target = "username", qualifiedByName = "generateUsername")
+    @Mapping(target = "password", ignore = true)
+    @Mapping(target = "deleted", ignore = true)
+    @Mapping(target = "assignedTickets", ignore = true)
+    @Mapping(target = "createdTickets", ignore = true)
+    Employee mapToEmployee(EmployeeDto employeeDto);
 
-        );
-    }
-
-    public static Employee mapToEmployee(EmployeeDto employeeDto){
-        Employee employee = new Employee();
-        employee.setId(employeeDto.getId());
-        employee.setFirstName(employeeDto.getFirstName());
-        employee.setLastName(employeeDto.getLastName());
-        employee.setBirthDate(employeeDto.getBirthDate());
-        employee.setUsername(generateUsername(employeeDto.getLastName())); //edit
-        employee.setAddress(employeeDto.getAddress());
-        employee.setContactNumber(employeeDto.getContactNumber());
-        employee.setEmploymentStatus(employeeDto.getEmploymentStatus());
-        return employee;
-    }
-
-    private static String generateUsername(String lastName) {
+    @Named("generateUsername")
+    static String generateUsername(String lastName) {
         SecureRandom random = new SecureRandom();
         int randomN = 100 + random.nextInt(900);
         String halfLastName = lastName.substring(0, (lastName.length() + 1) / 2).toLowerCase();
