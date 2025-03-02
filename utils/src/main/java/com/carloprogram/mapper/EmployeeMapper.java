@@ -47,9 +47,10 @@ public class EmployeeMapper {
         return employee;
     }
 
-    private static String generateUsername (String lastName){
+    private static String generateUsername(String lastName) {
         SecureRandom random = new SecureRandom();
-        int randomN = 1000 + random.nextInt(9000);
-        return lastName.toLowerCase() + randomN;
+        int randomN = 100 + random.nextInt(900);
+        String halfLastName = lastName.substring(0, (lastName.length() + 1) / 2).toLowerCase();
+        return halfLastName + randomN;
     }
 }
