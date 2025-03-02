@@ -30,6 +30,9 @@ public class TicketRemarksImpl implements TicketRemarksService {
     @Autowired
     private EmployeeRepository employeeRepository;
 
+    @Autowired
+    private TicketRemarksMapper ticketRemarksMapper;
+
     @Transactional
     @LogExecution
     @Override
@@ -40,11 +43,13 @@ public class TicketRemarksImpl implements TicketRemarksService {
         Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new ResourceNotFoundException("Employee not found with ID: " + employeeId));
 
-        TicketRemarks remark = TicketRemarksMapper.mapToTicketRemarks(ticketRemarksDto, ticket, employee);
+        TicketRemarks remark = ticketRemarksMapper.mapToTicketRemarks(ticketRemarksDto);
+        remark.setTicketId(ticket);
+        remark.setEmployeeId(employee);
 
         TicketRemarks savedRemark = ticketRemarksRepository.save(remark);
 
-        return TicketRemarksMapper.mapToTicketRemarksDto(savedRemark);
+        return ticketRemarksMapper.mapToTicketRemarksDto(savedRemark);
     }
 
     @Override
@@ -56,7 +61,7 @@ public class TicketRemarksImpl implements TicketRemarksService {
         List<TicketRemarks> remarks = ticketRemarksRepository.findByTicketId(ticket);
 
         return remarks.stream()
-                .map(TicketRemarksMapper::mapToTicketRemarksDto)
+                .map(ticketRemarksMapper::mapToTicketRemarksDto)
                 .collect(Collectors.toList());
     }
 

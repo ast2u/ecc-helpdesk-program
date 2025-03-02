@@ -53,6 +53,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Autowired
     private BCryptPasswordEncoder encoder;
 
+    @Autowired
+    private EmployeeMapper employeeMapper;
+
     @Override
     public ResponseEntity<?> authenticateUser(LoginRequest loginRequest) {
         try{
@@ -65,7 +68,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             Employee employee = employeeRepository.findByUsername(userPrincipal.getUsername())
                     .orElseThrow(() -> new UsernameNotFoundException("Employee not found"));
 
-            EmployeeDto employeeDto = EmployeeMapper.mapToEmployeeDto(employee);
+            EmployeeDto employeeDto = employeeMapper.mapToEmployeeDto(employee);
 
             String token = jwtService.generateToken(userPrincipal);
 
@@ -80,10 +83,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     @LogExecution
     @Override //Add a separate business logic for login
     public EmployeeDto createEmployee(EmployeeDto employeeDto) {
-        Employee employee = EmployeeMapper.mapToEmployee(employeeDto);
+        Employee employee = employeeMapper.mapToEmployee(employeeDto);
         employee.setPassword(encoder.encode("Passw0rd123")); // create a default password
-        if (employeeDto.getEmployeeRoleIds() != null) {
-            List<EmployeeRole> roles = employeeDto.getEmployeeRoleIds()
+        if (employeeDto.getEmployeeRoles() != null) {
+            List<EmployeeRole> roles = employeeDto.getEmployeeRoles()
                     .stream()
                     .map(roleId -> employeeRoleRepository.findById(roleId.getId()).orElse(null))
                     .filter(Objects::nonNull)
@@ -98,7 +101,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
 
         Employee savedEmployee = employeeRepository.save(employee);
-        return EmployeeMapper.mapToEmployeeDto(savedEmployee);
+        return employeeMapper.mapToEmployeeDto(savedEmployee);
     }
 
     //Create another dto for employee profile
@@ -111,7 +114,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                         new ResourceNotFoundException("Employee does not exists " +
                                 "with given id: " + employeeId));
 
-        return EmployeeMapper.mapToEmployeeDto(employee);
+        return employeeMapper.mapToEmployeeDto(employee);
     }
 
     // Will be deleted!
@@ -131,7 +134,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         Page<Employee> employeePage = employeeRepository.findAll(pageable);
 
-        return employeePage.map(EmployeeMapper::mapToEmployeeDto);
+        return employeePage.map(employeeMapper::mapToEmployeeDto);
     }
 
     @Transactional
@@ -151,7 +154,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setEmploymentStatus(updatedEmployee.getEmploymentStatus());
 
         if(employee.getEmployeeRoles() != null){
-            List<EmployeeRole> roles = updatedEmployee.getEmployeeRoleIds().stream()
+            List<EmployeeRole> roles = updatedEmployee.getEmployeeRoles().stream()
                     .map(roleId -> employeeRoleRepository.findById(roleId.getId()).orElse(null))
                     .filter(Objects::nonNull)
                     .collect(Collectors.toList());
@@ -161,7 +164,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
 
         Employee updatedEmployeeObj = employeeRepository.save(employee);
-        return EmployeeMapper.mapToEmployeeDto(updatedEmployeeObj);
+        return employeeMapper.mapToEmployeeDto(updatedEmployeeObj);
     }
 
     @Transactional
@@ -191,7 +194,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         Employee updatedEmployee = employeeRepository.save(employee);
 
-        return EmployeeMapper.mapToEmployeeDto(updatedEmployee);
+        return employeeMapper.mapToEmployeeDto(updatedEmployee);
     }
 
 }

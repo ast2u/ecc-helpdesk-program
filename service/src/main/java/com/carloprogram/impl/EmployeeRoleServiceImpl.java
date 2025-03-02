@@ -25,13 +25,16 @@ public class EmployeeRoleServiceImpl implements EmployeeRoleService {
     @Autowired
     private EmployeeRepository employeeRepository;
 
+    @Autowired
+    private EmployeeRoleMapper employeeRoleMapper;
+
     @Transactional
     @LogExecution
     @Override
     public EmployeeRoleDto createEmployeeRole(EmployeeRoleDto employeeRoleDto) {
-        EmployeeRole employeeRole = EmployeeRoleMapper.mapToEmployeeRole(employeeRoleDto);
+        EmployeeRole employeeRole = employeeRoleMapper.mapToEmployeeRole(employeeRoleDto);
         EmployeeRole savedEmployeeRole = employeeRoleRepository.save(employeeRole);
-        return EmployeeRoleMapper.mapToEmployeeRoleDto(savedEmployeeRole);
+        return employeeRoleMapper.mapToEmployeeRoleDto(savedEmployeeRole);
 
     }
 
@@ -42,7 +45,7 @@ public class EmployeeRoleServiceImpl implements EmployeeRoleService {
                         new ResourceNotFoundException("Employee does not exists " +
                                 "with given id: " + employeeRoleId));
 
-        return EmployeeRoleMapper.mapToEmployeeRoleDto(employeeRole);
+        return employeeRoleMapper.mapToEmployeeRoleDto(employeeRole);
     }
 
     @Override
@@ -50,7 +53,7 @@ public class EmployeeRoleServiceImpl implements EmployeeRoleService {
         List<EmployeeRole> employeeRoles = employeeRoleRepository.findAll();
 
         return employeeRoles.stream()
-                .map(EmployeeRoleMapper::mapToEmployeeRoleDto)
+                .map(employeeRoleMapper::mapToEmployeeRoleDto)
                 .collect(Collectors.toList());
     }
 
@@ -65,7 +68,7 @@ public class EmployeeRoleServiceImpl implements EmployeeRoleService {
         employeeRole.setRole_title(updatedEmployeeRole.getRole_title());
         employeeRole.setRole_description(updatedEmployeeRole.getRole_description());
         EmployeeRole updatedEmployeeRoleObj = employeeRoleRepository.save(employeeRole);
-        return EmployeeRoleMapper.mapToEmployeeRoleDto(updatedEmployeeRoleObj);
+        return employeeRoleMapper.mapToEmployeeRoleDto(updatedEmployeeRoleObj);
     }
 
     @Transactional

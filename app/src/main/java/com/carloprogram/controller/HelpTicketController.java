@@ -2,18 +2,13 @@ package com.carloprogram.controller;
 
 import com.carloprogram.dto.HelpTicketDto;
 import com.carloprogram.dto.search.TicketSearchRequest;
-import com.carloprogram.mapper.HelpTicketMapper;
-import com.carloprogram.model.HelpTicket;
 import com.carloprogram.service.TicketService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/api/tickets")
@@ -57,9 +52,8 @@ public class HelpTicketController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<Page<HelpTicketDto>> getFilteredTickets(@RequestBody TicketSearchRequest request){
-        Page<HelpTicket> tickets = ticketService.searchTickets(request);
-        Page<HelpTicketDto> ticketDtos = tickets.map(HelpTicketMapper::mapToTicketDto);
+    public ResponseEntity<Page<HelpTicketDto>> getFilteredTickets(@ModelAttribute TicketSearchRequest request){
+        Page<HelpTicketDto> ticketDtos = ticketService.searchTickets(request);
         return ResponseEntity.ok(ticketDtos);
     }
 

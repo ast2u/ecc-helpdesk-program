@@ -6,6 +6,7 @@ import com.carloprogram.exception.ResourceNotFoundException;
 import com.carloprogram.logging.LogExecution;
 import com.carloprogram.mapper.HelpTicketMapper;
 import com.carloprogram.model.Employee;
+import com.carloprogram.model.TicketRemarks;
 import com.carloprogram.specification.TicketSpecification;
 import com.carloprogram.model.HelpTicket;
 import com.carloprogram.model.enums.TicketStatus;
@@ -30,6 +31,9 @@ public class TicketServiceImpl implements TicketService {
     @Autowired
     private EmployeeRepository employeeRepository;
 
+    @Autowired
+    private HelpTicketMapper ticketMapper;
+
     @LogExecution
     @Transactional
     @Override
@@ -37,7 +41,11 @@ public class TicketServiceImpl implements TicketService {
         Employee createdBy = employeeRepository.findById(createdById)
                 .orElseThrow(() -> new ResourceNotFoundException("Employee not found"));
 
-        HelpTicket ticket = HelpTicketMapper.mapToTicket(helpTicketDto, null, createdBy, null,null);
+        HelpTicket ticket = ticketMapper.mapToTicket(helpTicketDto);
+        ticket.setAssignee(null);
+        ticket.setCreatedBy(createdBy);
+        ticket.setUpdatedBy(createdBy);
+        ticket.setRemarks(null);
 
         if(ticket.getStatus() == null ){
             ticket.setStatus(TicketStatus.DRAFT);
@@ -45,7 +53,7 @@ public class TicketServiceImpl implements TicketService {
 
         ticket = helpTicketRepository.save(ticket);
 
-        return HelpTicketMapper.mapToTicketDto(ticket);
+        return ticketMapper.mapToTicketDto(ticket);
     }
 
     @LogExecution
@@ -57,13 +65,13 @@ public class TicketServiceImpl implements TicketService {
         Employee updatedBy = employeeRepository.findById(updatedById)
                 .orElseThrow(() -> new RuntimeException("Updater not found"));
 
-        ticket.setTicketTitle(helpTicketDto.getTitle());
+        ticket.setTitle(helpTicketDto.getTitle());
         ticket.setBody(helpTicketDto.getBody());
         ticket.setStatus(helpTicketDto.getStatus());
         ticket.setUpdatedBy(updatedBy);
 
         ticket = helpTicketRepository.save(ticket);
-        return HelpTicketMapper.mapToTicketDto(ticket);
+        return ticketMapper.mapToTicketDto(ticket);
     }
 
     @LogExecution
@@ -78,7 +86,7 @@ public class TicketServiceImpl implements TicketService {
         ticket.setAssignee(assignee);
         ticket = helpTicketRepository.save(ticket);
 
-        return HelpTicketMapper.mapToTicketDto(ticket);
+        return ticketMapper.mapToTicketDto(ticket);
     }
 
     @Override
@@ -87,10 +95,10 @@ public class TicketServiceImpl implements TicketService {
 
         Page<HelpTicket> ticketPage = helpTicketRepository.findAll(pageable);
 
-        return ticketPage.map(HelpTicketMapper::mapToTicketDto);
+        return ticketPage.map(ticketMapper::mapToTicketDto);
     }
 
-    public Page<HelpTicket> searchTickets(TicketSearchRequest ticketSearch){
+    public Page<HelpTicketDto> searchTickets(TicketSearchRequest ticketSearch){
         Specification<HelpTicket> spec = Specification.where(null);
 
         if (ticketSearch.getStatus() != null) {
@@ -115,7 +123,9 @@ public class TicketServiceImpl implements TicketService {
 
         Pageable pageable = PageRequest.of(ticketSearch.getPage(), ticketSearch.getSize());
 
-        return helpTicketRepository.findAll(spec, pageable);
+        Page<HelpTicket> ticketPage = helpTicketRepository.findAll(spec, pageable);
+
+        return ticketPage.map(ticketMapper::mapToTicketDto);
     }
 
 
@@ -125,7 +135,7 @@ public class TicketServiceImpl implements TicketService {
                 .orElseThrow(()-> new ResourceNotFoundException("Ticket id does not exists " +
                         "with given ticket number: "+ id));
 
-        return HelpTicketMapper.mapToTicketDto(ticket);
+        return ticketMapper.mapToTicketDto(ticket);
 
     }
 

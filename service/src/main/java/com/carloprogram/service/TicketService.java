@@ -14,7 +14,7 @@ public interface TicketService {
     HelpTicketDto updateTicket(Long id, HelpTicketDto helpTicketDto, Long updatedById);
     HelpTicketDto assignTicket(Long id, Long assigneeId);
     Page<HelpTicketDto> getAllTickets(int page, int size);
-    Page<HelpTicket> searchTickets(TicketSearchRequest ticketSearch);
+    Page<HelpTicketDto> searchTickets(TicketSearchRequest ticketSearch);
     HelpTicketDto getTicketById(Long id);
     void deleteTicketById(Long id);
 }
