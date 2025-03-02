@@ -32,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -81,9 +82,13 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Transactional
     @LogExecution
     @Override //Add a separate business logic for login
-    public EmployeeDto createEmployee(EmployeeDto employeeDto) {
+    public EmployeeDto createEmployee(EmployeeDto employeeDto, EmployeeUserPrincipal userPrincipal) {
+        Employee currentUser = employeeRepository.findById(userPrincipal.getEmployee().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
         Employee employee = employeeMapper.mapToEmployee(employeeDto);
-        employee.setPassword(encoder.encode("Passw0rd123")); // create a default password
+        employee.setPassword(encoder.encode("Passw0rd123"));
+
         if (employeeDto.getEmployeeRoles() != null) {
             List<EmployeeRole> roles = employeeDto.getEmployeeRoles()
                     .stream()
@@ -99,19 +104,21 @@ public class EmployeeServiceImpl implements EmployeeService {
             employee.setEmploymentStatus(EmploymentStatus.FULL_TIME);
         }
 
+        employee.setCreatedBy(currentUser);
+        employee.setUpdatedBy(currentUser);
+
         Employee savedEmployee = employeeRepository.save(employee);
         return employeeMapper.mapToEmployeeDto(savedEmployee);
     }
 
     //Create another dto for employee profile
     @Override
-    public EmployeeDto getEmployeeProfile(Authentication authentication) {
-        EmployeeUserPrincipal userPrincipal = (EmployeeUserPrincipal) authentication.getPrincipal();
-        Long employeeId = userPrincipal.getEmployee().getId();
-        Employee employee = employeeRepository.findByIdAndDeletedFalse(employeeId)
+    public EmployeeDto getEmployeeProfile(EmployeeUserPrincipal userPrincipal) {
+        Employee employee = employeeRepository.findByIdAndDeletedFalse(userPrincipal
+                        .getEmployee()
+                        .getId())
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Employee does not exists " +
-                                "with given id: " + employeeId));
+                        new ResourceNotFoundException("Employee does not exist"));
 
         return employeeMapper.mapToEmployeeDto(employee);
     }
@@ -121,7 +128,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 //    public EmployeeDto getEmployeeById(Long employeeId) {
 //        Employee employee = employeeRepository.findByIdAndDeletedFalse(employeeId)
 //                .orElseThrow(() ->
-//                        new ResourceNotFoundException("Employee does not exists " +
+//                        new ResourceNotFoundException("Employee does not exist " +
 //                                "with given id: " + employeeId));
 //
 //        return EmployeeMapper.mapToEmployeeDto(employee);
@@ -139,28 +146,29 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Transactional
     @LogExecution
     @Override
-    public EmployeeDto updateEmployeeById(Long employeeId, EmployeeDto updatedEmployee) {
+    public EmployeeDto updateEmployeeById(Long employeeId, EmployeeDto updatedEmployee, EmployeeUserPrincipal userPrincipal) {
         Employee employee = employeeRepository.findById(employeeId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Employee does not exists " +
-                                "with given id: "+ employeeId));
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: " + employeeId));
 
-        employee.setFirstName(updatedEmployee.getFirstName());
-        employee.setLastName(updatedEmployee.getLastName());
-        employee.setBirthDate(updatedEmployee.getBirthDate());
-        employee.setAddress(updatedEmployee.getAddress());
-        employee.setContactNumber(updatedEmployee.getContactNumber());
-        employee.setEmploymentStatus(updatedEmployee.getEmploymentStatus());
+        Employee currentUser = userPrincipal.getEmployee(); // Get the logged-in user directly
 
-        if(employee.getEmployeeRoles() != null){
+        // Only update fields if provided
+        Optional.ofNullable(updatedEmployee.getFirstName()).ifPresent(employee::setFirstName);
+        Optional.ofNullable(updatedEmployee.getLastName()).ifPresent(employee::setLastName);
+        Optional.ofNullable(updatedEmployee.getBirthDate()).ifPresent(employee::setBirthDate);
+        Optional.ofNullable(updatedEmployee.getAddress()).ifPresent(employee::setAddress);
+        Optional.ofNullable(updatedEmployee.getContactNumber()).ifPresent(employee::setContactNumber);
+        Optional.ofNullable(updatedEmployee.getEmploymentStatus()).ifPresent(employee::setEmploymentStatus);
+
+        if (updatedEmployee.getEmployeeRoles() != null) {
             List<EmployeeRole> roles = updatedEmployee.getEmployeeRoles().stream()
-                    .map(roleId -> employeeRoleRepository.findById(roleId.getId()).orElse(null))
+                    .map(roleDto -> employeeRoleRepository.findById(roleDto.getId()).orElse(null))
                     .filter(Objects::nonNull)
                     .collect(Collectors.toList());
             employee.setEmployeeRoles(roles);
-        } else {
-            employee.setEmployeeRoles(null);
         }
+
+        employee.setUpdatedBy(currentUser);
 
         Employee updatedEmployeeObj = employeeRepository.save(employee);
         return employeeMapper.mapToEmployeeDto(updatedEmployeeObj);
@@ -180,9 +188,12 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @LogExecution
-    public EmployeeDto assignRoleToEmployee(Long employeeId, List<Long> roleIds) {
+    public EmployeeDto assignRoleToEmployee(Long employeeId, List<Long> roleIds, EmployeeUserPrincipal userPrincipal) {
         Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new ResourceNotFoundException("Employee not found with ID: " + employeeId));
+
+        Employee currentUser = employeeRepository.findById(userPrincipal.getEmployee().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         List<EmployeeRole> roles = roleIds.stream()
                 .map(roleId -> employeeRoleRepository.findById(roleId)
@@ -190,6 +201,8 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .collect(Collectors.toList());
 
         employee.setEmployeeRoles(roles);
+
+        employee.setUpdatedBy(currentUser);
 
         Employee updatedEmployee = employeeRepository.save(employee);
 

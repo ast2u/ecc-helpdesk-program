@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,8 +25,9 @@ public class EmployeeController {
     //Build App Employee Rest API
     @PostMapping
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<EmployeeDto> createEmployee (@Valid @RequestBody EmployeeDto employeeDto){
-        EmployeeDto savedEmployee = employeeService.createEmployee(employeeDto);
+    public ResponseEntity<EmployeeDto> createEmployee (@Valid @RequestBody EmployeeDto employeeDto,
+                                                       @AuthenticationPrincipal EmployeeUserPrincipal userPrincipal){
+        EmployeeDto savedEmployee = employeeService.createEmployee(employeeDto, userPrincipal);
         return new ResponseEntity<>(savedEmployee, HttpStatus.CREATED);
     }
 
@@ -40,8 +42,8 @@ public class EmployeeController {
 
     @GetMapping("/me")
     @PreAuthorize("hasAnyAuthority('EMPLOYEE', 'ADMIN')")
-    public ResponseEntity<EmployeeDto> getMyInfo(Authentication authentication) {
-        EmployeeDto employeeDto = employeeService.getEmployeeProfile(authentication);
+    public ResponseEntity<EmployeeDto> getMyInfo(@AuthenticationPrincipal EmployeeUserPrincipal userPrincipal) {
+        EmployeeDto employeeDto = employeeService.getEmployeeProfile(userPrincipal);
         return ResponseEntity.ok(employeeDto);
     }
 
@@ -57,10 +59,12 @@ public class EmployeeController {
     }
 
     //Build update employee rest api
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<EmployeeDto> updateEmployee(@PathVariable("id") Long employeeId,@Valid @RequestBody EmployeeDto updatedEmployee){
-        EmployeeDto employeeDto = employeeService.updateEmployeeById(employeeId, updatedEmployee);
+    public ResponseEntity<EmployeeDto> updateEmployee(@PathVariable("id") Long employeeId,
+                                                      @RequestBody EmployeeDto updatedEmployee,
+                                                      @AuthenticationPrincipal EmployeeUserPrincipal userPrincipal){
+        EmployeeDto employeeDto = employeeService.updateEmployeeById(employeeId, updatedEmployee, userPrincipal);
         return ResponseEntity.ok(employeeDto);
     }
 
@@ -68,8 +72,9 @@ public class EmployeeController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<EmployeeDto> assignRolesToEmployee(
             @PathVariable("id") Long employeeId,
-            @RequestBody List<Long> roleIds) {
-        EmployeeDto updatedEmployee = employeeService.assignRoleToEmployee(employeeId, roleIds);
+            @RequestBody List<Long> roleIds,
+            @AuthenticationPrincipal EmployeeUserPrincipal userPrincipal) {
+        EmployeeDto updatedEmployee = employeeService.assignRoleToEmployee(employeeId, roleIds, userPrincipal);
         return ResponseEntity.ok(updatedEmployee);
     }
 
