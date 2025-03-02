@@ -1,6 +1,7 @@
 package com.carloprogram.service;
 
 import com.carloprogram.dto.HelpTicketDto;
+import com.carloprogram.dto.search.TicketSearchRequest;
 import com.carloprogram.model.HelpTicket;
 import org.springframework.data.domain.Page;
 
@@ -13,10 +14,7 @@ public interface TicketService {
     HelpTicketDto updateTicket(Long id, HelpTicketDto helpTicketDto, Long updatedById);
     HelpTicketDto assignTicket(Long id, Long assigneeId);
     Page<HelpTicketDto> getAllTickets(int page, int size);
-    Page<HelpTicket> searchTickets(Integer page, Integer size,
-                                   String status, Long createdBy, Long updatedBy, Long assignee,
-                                   LocalDateTime createdStart, LocalDateTime createdEnd,
-                                   LocalDateTime updatedStart, LocalDateTime updatedEnd);
+    Page<HelpTicket> searchTickets(TicketSearchRequest ticketSearch);
     HelpTicketDto getTicketById(Long id);
     void deleteTicketById(Long id);
 }

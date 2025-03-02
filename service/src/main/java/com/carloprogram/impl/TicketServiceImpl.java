@@ -1,6 +1,7 @@
 package com.carloprogram.impl;
 
 import com.carloprogram.dto.HelpTicketDto;
+import com.carloprogram.dto.search.TicketSearchRequest;
 import com.carloprogram.exception.ResourceNotFoundException;
 import com.carloprogram.logging.LogExecution;
 import com.carloprogram.mapper.HelpTicketMapper;
@@ -19,10 +20,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class TicketServiceImpl implements TicketService {
@@ -93,33 +90,30 @@ public class TicketServiceImpl implements TicketService {
         return ticketPage.map(HelpTicketMapper::mapToTicketDto);
     }
 
-    public Page<HelpTicket> searchTickets(Integer page, Integer size,
-                                          String status, Long createdBy, Long updatedBy,
-                                          Long assignee, LocalDateTime createdStart, LocalDateTime createdEnd,
-                                          LocalDateTime updatedStart, LocalDateTime updatedEnd){
+    public Page<HelpTicket> searchTickets(TicketSearchRequest ticketSearch){
         Specification<HelpTicket> spec = Specification.where(null);
 
-        if (status != null) {
-            spec = spec.and(TicketSpecification.hasStatus(TicketStatus.valueOf(status)));
+        if (ticketSearch.getStatus() != null) {
+            spec = spec.and(TicketSpecification.hasStatus(TicketStatus.valueOf(ticketSearch.getStatus())));
         }
 
-        if (createdBy != null && createdBy > 0) {
-            spec = spec.and(TicketSpecification.createdBy(createdBy));
+        if (ticketSearch.getCreatedBy() != null && ticketSearch.getCreatedBy() > 0) {
+            spec = spec.and(TicketSpecification.createdBy(ticketSearch.getCreatedBy()));
         }
-        if (updatedBy != null && updatedBy > 0) {
-            spec = spec.and(TicketSpecification.updatedBy(updatedBy));
+        if (ticketSearch.getUpdatedBy() != null && ticketSearch.getUpdatedBy() > 0) {
+            spec = spec.and(TicketSpecification.updatedBy(ticketSearch.getUpdatedBy()));
         }
-        if (assignee != null && assignee > 0) {
-            spec = spec.and(TicketSpecification.assignedTo(assignee));
+        if (ticketSearch.getAssignee() != null && ticketSearch.getAssignee() > 0) {
+            spec = spec.and(TicketSpecification.assignedTo(ticketSearch.getAssignee()));
         }
-        if (createdStart != null && createdEnd != null) {
-            spec = spec.and(TicketSpecification.createdBetween(createdStart, createdEnd));
+        if (ticketSearch.getCreatedStart() != null && ticketSearch.getCreatedEnd() != null) {
+            spec = spec.and(TicketSpecification.createdBetween(ticketSearch.getCreatedStart(), ticketSearch.getCreatedEnd()));
         }
-        if (updatedStart != null && updatedEnd != null) {
-            spec = spec.and(TicketSpecification.updatedBetween(updatedStart, updatedEnd));
+        if (ticketSearch.getUpdatedStart() != null && ticketSearch.getUpdatedEnd() != null) {
+            spec = spec.and(TicketSpecification.updatedBetween(ticketSearch.getUpdatedStart(), ticketSearch.getUpdatedEnd()));
         }
 
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(ticketSearch.getPage(), ticketSearch.getSize());
 
         return helpTicketRepository.findAll(spec, pageable);
     }
