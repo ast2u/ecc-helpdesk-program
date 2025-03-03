@@ -1,22 +1,25 @@
 package com.carloprogram.dto.search;
 
-import com.carloprogram.model.enums.TicketStatus;
+import com.carloprogram.model.enums.EmploymentStatus;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
-public class TicketSearchRequest {
+public class EmployeeSearchRequest {
     private Integer page = 0;
     private Integer size = 4;
-    private String desc;
-    private TicketStatus status;
-    private Long createdBy;
-    private Long updatedBy;
-    private Long assignee;
+    private String name;
+    private LocalDate birthDate;
+    private String address;
+    private EmploymentStatus status;
+    private boolean deleted;
+    private List<Long> roles;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime createdStart;
@@ -29,4 +32,5 @@ public class TicketSearchRequest {
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime updatedEnd;
+
 }
