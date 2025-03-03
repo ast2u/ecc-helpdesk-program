@@ -29,14 +29,12 @@ public class HelpTicketController {
         return ResponseEntity.ok(ticketService.createTicket(ticketDto, userPrincipal));
     }
 
-    @PutMapping("/update/{id}")
+    @PatchMapping("/update/{id}")
     public ResponseEntity<HelpTicketDto> updateTicket(@PathVariable("id") Long id,
-                                                      @Valid @RequestBody HelpTicketDto ticketDto,
+                                                      @RequestBody HelpTicketDto ticketDto,
                                                       @AuthenticationPrincipal EmployeeUserPrincipal userPrincipal) {
         return ResponseEntity.ok(ticketService.updateTicket(id, ticketDto, userPrincipal));
     }
-
-
 
     @PutMapping("/assign/{id}/{assigneeId}")
     public ResponseEntity<HelpTicketDto> assignTicket(@PathVariable("id") Long id,
@@ -46,17 +44,8 @@ public class HelpTicketController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<HelpTicketDto>> getAllTickets(
-            @RequestParam(defaultValue = "0", name = "page") int page,
-            @RequestParam(defaultValue = "4", name = "size") int size) {
-
-        Page<HelpTicketDto> helpTicket = ticketService.getAllTickets(page, size);
-        return ResponseEntity.ok(helpTicket);
-    }
-
-    @GetMapping("/search")
-    public ResponseEntity<Page<HelpTicketDto>> getFilteredTickets(@ModelAttribute TicketSearchRequest request){
-        Page<HelpTicketDto> ticketDtos = ticketService.searchTickets(request);
+    public ResponseEntity<Page<HelpTicketDto>> getAllFilteredTickets(@ModelAttribute TicketSearchRequest request){
+        Page<HelpTicketDto> ticketDtos = ticketService.getAllFilterTickets(request);
         return ResponseEntity.ok(ticketDtos);
     }
 
