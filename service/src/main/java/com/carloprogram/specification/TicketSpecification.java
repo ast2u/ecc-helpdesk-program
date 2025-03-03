@@ -1,48 +1,45 @@
 package com.carloprogram.specification;
 
+import com.carloprogram.dto.search.TicketSearchRequest;
 import com.carloprogram.model.HelpTicket;
-import com.carloprogram.model.enums.TicketStatus;
+import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TicketSpecification {
 
-    public static Specification<HelpTicket> hasStatus(TicketStatus status) {
-        return (root, query, criteriaBuilder) ->
-                status != null ? criteriaBuilder.equal(root.get("status"), status) : null;
-    }
+    public static Specification<HelpTicket> filterTickets(TicketSearchRequest searchRequest){
+        return (root, query, criteriaBuilder) ->{
+            List<Predicate> predicates = new ArrayList<>();
 
-    public static Specification<HelpTicket> createdBy(Long createdBy) {
-        return (root, query, criteriaBuilder) ->
-                createdBy != null ? criteriaBuilder.equal(root.get("createdBy").get("id"), createdBy) : null;
-    }
-
-    public static Specification<HelpTicket> updatedBy(Long updatedBy) {
-        return (root, query, criteriaBuilder) ->
-                updatedBy != null ? criteriaBuilder.equal(root.get("updatedBy").get("id"), updatedBy) : null;
-    }
-
-    public static Specification<HelpTicket> assignedTo(Long assignee) {
-        return (root, query, criteriaBuilder) ->
-                assignee != null ? criteriaBuilder.equal(root.get("assignee").get("id"), assignee) : null;
-    }
-
-    public static Specification<HelpTicket> createdBetween(LocalDateTime start, LocalDateTime end) {
-        return (root, query, criteriaBuilder) -> {
-            if (start != null && end != null) {
-                return criteriaBuilder.between(root.get("createdDate"), start, end);
+            if(searchRequest.getDesc() != null && !searchRequest.getDesc().isEmpty()){
+                String pattern = "%" + searchRequest.getDesc().toLowerCase() + "%";
+                predicates.add(criteriaBuilder.or
+                        (criteriaBuilder.like(criteriaBuilder.lower(root.get("title")), pattern),
+                        (criteriaBuilder.like(criteriaBuilder.lower(root.get("description")), pattern))
+                        ));
             }
-            return null;
-        };
-    }
-
-    public static Specification<HelpTicket> updatedBetween(LocalDateTime start, LocalDateTime end) {
-        return (root, query, criteriaBuilder) -> {
-            if (start != null && end != null) {
-                return criteriaBuilder.between(root.get("updatedDate"), start, end);
+            if(searchRequest.getStatus() != null){
+                predicates.add(criteriaBuilder.equal(root.get("status"), searchRequest.getStatus()));
             }
-            return null;
+            if(searchRequest.getCreatedBy() != null){
+                predicates.add(criteriaBuilder.equal(root.get("createdBy").get("id"), searchRequest.getCreatedBy()));
+            }
+            if(searchRequest.getUpdatedBy() != null){
+                predicates.add(criteriaBuilder.equal(root.get("updatedBy").get("id"), searchRequest.getUpdatedBy()));
+            }
+            if(searchRequest.getAssignee() != null){
+                predicates.add(criteriaBuilder.equal(root.get("assignee").get("id"), searchRequest.getAssignee()));
+            }
+            if(searchRequest.getCreatedStart() != null && searchRequest.getCreatedEnd() != null){
+                predicates.add(criteriaBuilder.between(root.get("createdDate"), searchRequest.getCreatedStart(), searchRequest.getCreatedEnd()));
+            }
+            if(searchRequest.getUpdatedStart() != null && searchRequest.getUpdatedEnd() != null){
+                predicates.add(criteriaBuilder.between(root.get("updatedDate"), searchRequest.getUpdatedStart(), searchRequest.getUpdatedEnd()));
+            }
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
     }
 }
