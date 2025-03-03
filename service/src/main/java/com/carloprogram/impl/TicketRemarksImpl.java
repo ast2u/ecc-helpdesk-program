@@ -44,7 +44,7 @@ public class TicketRemarksImpl implements TicketRemarksService {
         Employee currentUser = employeeUserPrincipal.getEmployee();
 
         TicketRemarks remark = ticketRemarksMapper.mapToTicketRemarks(ticketRemarksDto);
-        remark.setTicketId(ticket);
+        remark.setTicket(ticket);
         remark.setEmployeeId(currentUser);
 
         TicketRemarks savedRemark = ticketRemarksRepository.save(remark);
@@ -59,7 +59,7 @@ public class TicketRemarksImpl implements TicketRemarksService {
         HelpTicket ticket = helpTicketRepository.findById(ticketId)
                 .orElseThrow(() -> new ResourceNotFoundException("Ticket not found with ticketNumber: " + ticketId));
 
-        List<TicketRemarks> remarks = ticketRemarksRepository.findByTicketId(ticket);
+        List<TicketRemarks> remarks = ticketRemarksRepository.findByTicket(ticket);
 
         return remarks.stream()
                 .map(ticketRemarksMapper::mapToTicketRemarksDto)

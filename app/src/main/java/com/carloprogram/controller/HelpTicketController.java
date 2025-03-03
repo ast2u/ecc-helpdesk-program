@@ -15,10 +15,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/tickets")
 public class HelpTicketController {
-    /*
-    TODO: Admin must be able to add a remark and update status of the ticket.
-     Must be able to assign ticket to an employee
-    */
 
     @Autowired
     private TicketService ticketService;

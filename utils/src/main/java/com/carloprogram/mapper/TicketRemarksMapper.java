@@ -11,11 +11,11 @@ public interface TicketRemarksMapper {
 
     TicketRemarksMapper INSTANCE = Mappers.getMapper(TicketRemarksMapper.class);
 
-    @Mapping(source = "ticketId.id", target = "ticketId")
+    @Mapping(source = "ticket.id", target = "ticketId")
     @Mapping(source = "employeeId.id", target = "employeeId")
     TicketRemarksDto mapToTicketRemarksDto(TicketRemarks ticketRemarks);
 
-    @Mapping(target = "ticketId", ignore = true)
+    @Mapping(target = "ticket", ignore = true)
     @Mapping(target = "employeeId", ignore = true)
     TicketRemarks mapToTicketRemarks(TicketRemarksDto dto);
 }

@@ -41,7 +41,7 @@ public class HelpTicket extends BaseEntity{
     @JoinColumn(name = "assignee_id")
     private Employee assignee;
 
-    @OneToMany(mappedBy = "ticketId", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TicketRemarks> remarks = new ArrayList<>();
 
     @PrePersist
