@@ -1,4 +1,4 @@
-package com.carloprogram.util;
+package com.carloprogram.util.ticket;
 
 import com.carloprogram.dto.HelpTicketDto;
 import com.carloprogram.model.Employee;

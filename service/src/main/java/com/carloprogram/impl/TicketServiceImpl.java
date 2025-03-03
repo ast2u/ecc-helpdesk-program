@@ -14,7 +14,7 @@ import com.carloprogram.model.enums.TicketStatus;
 import com.carloprogram.repository.EmployeeRepository;
 import com.carloprogram.repository.HelpTicketRepository;
 import com.carloprogram.service.TicketService;
-import com.carloprogram.util.HelpTicketUtil;
+import com.carloprogram.util.ticket.HelpTicketUtil;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
