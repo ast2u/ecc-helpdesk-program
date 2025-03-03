@@ -1,12 +1,12 @@
 package com.carloprogram.security.config;
 
 import com.carloprogram.impl.EmployeeUserDetailsServiceImpl;
+import com.carloprogram.model.EmployeeUserPrincipal;
 import com.carloprogram.security.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -46,6 +46,13 @@ public class JwtFilter extends OncePerRequestFilter {
 
             UserDetails userDetails = context.getBean(EmployeeUserDetailsServiceImpl.class)
                     .loadUserByUsername(username);
+
+            //Might not need this anymore
+            if(userDetails instanceof EmployeeUserPrincipal employeeUserPrincipal &&
+            employeeUserPrincipal.getEmployee().isDeleted()){
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "User is deleted");
+                return;
+            }
 
             if(jwtService.validateToken(token, userDetails)){
                 UsernamePasswordAuthenticationToken authToken =
