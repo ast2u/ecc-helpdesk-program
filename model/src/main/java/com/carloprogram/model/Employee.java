@@ -59,11 +59,11 @@ public class Employee extends BaseEntity{
     )
     private List<EmployeeRole> employeeRoles = new ArrayList<>();
 
-    @OneToMany(mappedBy = "assignee")
-    private Set<HelpTicket> assignedTickets = new HashSet<>();
-
-    @OneToMany(mappedBy = "createdBy")
-    private Set<HelpTicket> createdTickets = new HashSet<>();
+//    @OneToMany(mappedBy = "assignee")
+//    private Set<HelpTicket> assignedTickets = new HashSet<>();
+//
+//    @OneToMany(mappedBy = "createdBy")
+//    private Set<HelpTicket> createdTickets = new HashSet<>();
 
     @Column(name = "deleted", nullable = false)
     private boolean deleted = false; // Default: Not deleted
