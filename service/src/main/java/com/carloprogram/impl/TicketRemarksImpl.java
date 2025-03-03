@@ -52,6 +52,7 @@ public class TicketRemarksImpl implements TicketRemarksService {
         return ticketRemarksMapper.mapToTicketRemarksDto(savedRemark);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<TicketRemarksDto> getRemarksByTicketId(Long ticketId) {
 
@@ -65,6 +66,8 @@ public class TicketRemarksImpl implements TicketRemarksService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
+    @LogExecution
     @Override
     public void deleteRemark(Long ticketId, Long id) {
         HelpTicket ticket = helpTicketRepository.findById(ticketId)

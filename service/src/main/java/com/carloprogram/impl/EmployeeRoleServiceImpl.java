@@ -38,6 +38,7 @@ public class EmployeeRoleServiceImpl implements EmployeeRoleService {
 
     }
 
+    @Transactional(readOnly = true)
     @Override
     public EmployeeRoleDto getEmployeeRoleById(Long employeeRoleId) {
         EmployeeRole employeeRole = employeeRoleRepository.findById(employeeRoleId)
@@ -48,6 +49,7 @@ public class EmployeeRoleServiceImpl implements EmployeeRoleService {
         return employeeRoleMapper.mapToEmployeeRoleDto(employeeRole);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<EmployeeRoleDto> getAllEmployeeRoles() {
         List<EmployeeRole> employeeRoles = employeeRoleRepository.findAll();
