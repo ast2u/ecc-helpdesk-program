@@ -1,10 +1,13 @@
 package com.carloprogram.impl;
 
+import com.carloprogram.dto.EmployeeProfileDto;
 import com.carloprogram.dto.LoginRequest;
 import com.carloprogram.dto.LoginResponse;
+import com.carloprogram.dto.search.EmployeeSearchRequest;
 import com.carloprogram.exception.ResourceNotFoundException;
 import com.carloprogram.logging.LogExecution;
 import com.carloprogram.mapper.EmployeeMapper;
+import com.carloprogram.mapper.EmployeeProfileMapper;
 import com.carloprogram.model.Employee;
 import com.carloprogram.model.EmployeeRole;
 import com.carloprogram.model.EmployeeUserPrincipal;
@@ -14,11 +17,13 @@ import com.carloprogram.dto.EmployeeDto;
 import com.carloprogram.repository.EmployeeRoleRepository;
 import com.carloprogram.security.service.JwtService;
 import com.carloprogram.service.EmployeeService;
+import com.carloprogram.specification.EmployeeSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -56,7 +61,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Autowired
     private EmployeeMapper employeeMapper;
 
+    @Autowired
+    private EmployeeProfileMapper profileMapper;
+
     @Override
+    @LogExecution
     public ResponseEntity<?> authenticateUser(LoginRequest loginRequest) {
         try{
             Authentication authentication = authManager
@@ -65,7 +74,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
             EmployeeUserPrincipal userPrincipal = (EmployeeUserPrincipal) authentication.getPrincipal();
 
-            Employee employee = employeeRepository.findByUsername(userPrincipal.getUsername())
+            Employee employee = employeeRepository.findByUsernameAndDeletedFalse(userPrincipal.getUsername())
                     .orElseThrow(() -> new UsernameNotFoundException("Employee not found"));
 
             EmployeeDto employeeDto = employeeMapper.mapToEmployeeDto(employee);
@@ -81,7 +90,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Transactional
     @LogExecution
-    @Override //Add a separate business logic for login
+    @Override
     public EmployeeDto createEmployee(EmployeeDto employeeDto, EmployeeUserPrincipal userPrincipal) {
         Employee currentUser = employeeRepository.findById(userPrincipal.getEmployee().getId())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
@@ -111,34 +120,27 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeMapper.mapToEmployeeDto(savedEmployee);
     }
 
-    //Create another dto for employee profile
+    @Transactional(readOnly = true)
     @Override
-    public EmployeeDto getEmployeeProfile(EmployeeUserPrincipal userPrincipal) {
+    public EmployeeProfileDto getEmployeeProfile(EmployeeUserPrincipal userPrincipal) {
         Employee employee = employeeRepository.findByIdAndDeletedFalse(userPrincipal
                         .getEmployee()
                         .getId())
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Employee does not exist"));
 
-        return employeeMapper.mapToEmployeeDto(employee);
+        return profileMapper.toProfileDto(employee);
     }
 
-    // Will be deleted!
-//    @Override
-//    public EmployeeDto getEmployeeById(Long employeeId) {
-//        Employee employee = employeeRepository.findByIdAndDeletedFalse(employeeId)
-//                .orElseThrow(() ->
-//                        new ResourceNotFoundException("Employee does not exist " +
-//                                "with given id: " + employeeId));
-//
-//        return EmployeeMapper.mapToEmployeeDto(employee);
-//    }
-
+    @Transactional(readOnly = true)
     @Override
-    public Page<EmployeeDto> getAllEmployees(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("id").ascending());
+    public Page<EmployeeDto> getAllEmployees(EmployeeSearchRequest searchRequest) {
+        Specification<Employee> spec = EmployeeSpecification.filterEmployees(searchRequest);
 
-        Page<Employee> employeePage = employeeRepository.findAll(pageable);
+        Pageable pageable = PageRequest.of(searchRequest.getPage(), searchRequest.getSize(),
+                Sort.by("id").ascending());
+
+        Page<Employee> employeePage = employeeRepository.findAll(spec, pageable);
 
         return employeePage.map(employeeMapper::mapToEmployeeDto);
     }
@@ -187,6 +189,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    @Transactional
     @LogExecution
     public EmployeeDto assignRoleToEmployee(Long employeeId, List<Long> roleIds, EmployeeUserPrincipal userPrincipal) {
         Employee employee = employeeRepository.findById(employeeId)

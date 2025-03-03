@@ -1,6 +1,8 @@
 package com.carloprogram.controller;
 
 import com.carloprogram.dto.EmployeeDto;
+import com.carloprogram.dto.EmployeeProfileDto;
+import com.carloprogram.dto.search.EmployeeSearchRequest;
 import com.carloprogram.model.EmployeeUserPrincipal;
 import com.carloprogram.service.EmployeeService;
 import jakarta.validation.Valid;
@@ -31,30 +33,18 @@ public class EmployeeController {
         return new ResponseEntity<>(savedEmployee, HttpStatus.CREATED);
     }
 
-    //Get employee by id rest api
-    //Can be deleted
-//    @GetMapping("/{id}")
-//    @PreAuthorize("hasAuthority('ADMIN')")
-//    public ResponseEntity<EmployeeDto> getEmployeeById(@PathVariable("id") Long employeeId){
-//        EmployeeDto employeeDto = employeeService.getEmployeeById(employeeId);
-//        return ResponseEntity.ok(employeeDto);
-//    }
-
     @GetMapping("/me")
     @PreAuthorize("hasAnyAuthority('EMPLOYEE', 'ADMIN')")
-    public ResponseEntity<EmployeeDto> getMyInfo(@AuthenticationPrincipal EmployeeUserPrincipal userPrincipal) {
-        EmployeeDto employeeDto = employeeService.getEmployeeProfile(userPrincipal);
-        return ResponseEntity.ok(employeeDto);
+    public ResponseEntity<EmployeeProfileDto> getMyInfo(@AuthenticationPrincipal EmployeeUserPrincipal userPrincipal) {
+        EmployeeProfileDto employeeProfileDtoDto = employeeService.getEmployeeProfile(userPrincipal);
+        return ResponseEntity.ok(employeeProfileDtoDto);
     }
 
     //Build get all employees rest api
     @GetMapping
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<Page<EmployeeDto>> getAllEmployees(
-            @RequestParam(defaultValue = "0", name = "page") int page,
-            @RequestParam(defaultValue = "4", name = "size") int size) {
-
-        Page<EmployeeDto> employees = employeeService.getAllEmployees(page, size);
+    public ResponseEntity<Page<EmployeeDto>> getAllEmployees(@ModelAttribute EmployeeSearchRequest request) {
+        Page<EmployeeDto> employees = employeeService.getAllEmployees(request);
         return ResponseEntity.ok(employees);
     }
 
