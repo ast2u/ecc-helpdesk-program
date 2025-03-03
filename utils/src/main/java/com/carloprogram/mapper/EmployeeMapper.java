@@ -20,11 +20,9 @@ public interface EmployeeMapper {
 
     @Mapping(source = "lastName", target = "username", qualifiedByName = "generateUsername")
     @Mapping(target = "password", ignore = true)
-    @Mapping(target = "deleted", ignore = true)
     @Mapping(target = "createdBy", ignore = true)
     @Mapping(target = "updatedBy", ignore = true)
-    @Mapping(target = "assignedTickets", ignore = true)
-    @Mapping(target = "createdTickets", ignore = true)
+    @Mapping(target = "deleted", ignore = true)
     Employee mapToEmployee(EmployeeDto employeeDto);
 
     @Named("generateUsername")
