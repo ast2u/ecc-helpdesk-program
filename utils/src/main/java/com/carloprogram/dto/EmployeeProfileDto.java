@@ -15,8 +15,8 @@ public class EmployeeProfileDto {
     private String firstName;
     private String lastName;
     private String username;
-    //private String password;
     private LocalDate birthDate;
+    private int age;
     private String address;
     private String contactNumber;
     //private List<HelpTicket> createdTickets;

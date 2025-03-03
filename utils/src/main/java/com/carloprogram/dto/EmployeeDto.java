@@ -34,6 +34,7 @@ public class EmployeeDto extends BaseDto{
     @NotNull(message = "Birth date is mandatory")
     @Past(message = "Birth date must be in the past")
     private LocalDate birthDate;
+    private int age;
 
     @NotBlank(message = "Address is mandatory")
     private String address;
@@ -41,6 +42,5 @@ public class EmployeeDto extends BaseDto{
     private String contactNumber;
     private EmploymentStatus employmentStatus;
     private List<EmployeeRoleDto> employeeRoles = new ArrayList<>();
-    private boolean deleted;
 
 }
