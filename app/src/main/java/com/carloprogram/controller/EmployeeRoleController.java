@@ -49,6 +49,7 @@ public class EmployeeRoleController {
     //Build delete role rest api
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteEmployeeRole(@PathVariable("id") Long employeeRoleId){
+        // fix if possible
         try{
             EmployeeRoleDto employeeRole = employeeRoleService.getEmployeeRoleById(employeeRoleId);
             String roleTitle = employeeRole.getRole_title();

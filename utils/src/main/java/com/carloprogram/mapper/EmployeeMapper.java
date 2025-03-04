@@ -13,8 +13,6 @@ public interface EmployeeMapper {
 
     @Mapping(target = "createdBy", source = "createdBy", qualifiedByName = "mapEmployeeToId")
     @Mapping(target = "updatedBy", source = "updatedBy", qualifiedByName = "mapEmployeeToId")
-    @Mapping(target = "age", expression = "java(com.carloprogram.util.employee.DateUtil.computeAge(employee.getBirthDate()))")
-    //Temporary mapping of age
     EmployeeDto mapToEmployeeDto(Employee employee);
 
     @Mapping(target = "username", source = "lastName",  qualifiedByName = "generateUsername")

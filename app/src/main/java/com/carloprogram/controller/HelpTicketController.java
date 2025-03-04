@@ -49,12 +49,8 @@ public class HelpTicketController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteTicket(@PathVariable("id") Long id){
-        try {
-            ticketService.deleteTicketById(id);
-            return ResponseEntity.ok("Ticket with number:" + id + " deleted successfully.");
-        } catch (RuntimeException ex) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: " + ex.getMessage());
-        }
+        ticketService.deleteTicketById(id);
+        return ResponseEntity.ok("Ticket with number:" + id + " deleted successfully.");
     }
 
 }

@@ -69,12 +69,8 @@ public class EmployeeController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<String> deleteEmployee(@PathVariable("id") Long employeeId){
-        try {
-            employeeService.deleteEmployeeById(employeeId);
-            return ResponseEntity.ok("Employee#" + employeeId + " marked as deleted");
-        } catch (RuntimeException ex) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: " + ex.getMessage());
-        }
+        employeeService.deleteEmployeeById(employeeId);
+        return ResponseEntity.ok("Employee#" + employeeId + " marked as deleted");
     }
 
 }
