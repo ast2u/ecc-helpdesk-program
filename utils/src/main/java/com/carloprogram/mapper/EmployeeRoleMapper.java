@@ -4,7 +4,6 @@ import com.carloprogram.dto.EmployeeRoleDto;
 import com.carloprogram.model.EmployeeRole;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
 public interface EmployeeRoleMapper {

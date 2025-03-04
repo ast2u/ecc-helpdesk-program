@@ -4,7 +4,6 @@ import com.carloprogram.dto.TicketRemarksDto;
 import com.carloprogram.model.TicketRemarks;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
 public interface TicketRemarksMapper {

@@ -5,7 +5,6 @@ import com.carloprogram.dto.EmployeeDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
-import org.mapstruct.factory.Mappers;
 
 import java.security.SecureRandom;
 
@@ -23,8 +22,6 @@ public interface EmployeeMapper {
     @Mapping(target = "createdBy", ignore = true)
     @Mapping(target = "updatedBy", ignore = true)
     @Mapping(target = "deleted", ignore = true)
-//    @Mapping(target = "assignedTickets", ignore = true)
-//    @Mapping(target = "createdTickets", ignore = true)
     Employee mapToEmployee(EmployeeDto employeeDto);
 
     @Named("generateUsername")
