@@ -32,4 +32,7 @@ public abstract class BaseEntity {
     @JoinColumn(name = "updated_by")
     @JsonIgnore
     private Employee updatedBy;
+
+    @Column(name = "deleted", nullable = false)
+    private boolean deleted = false;
 }
