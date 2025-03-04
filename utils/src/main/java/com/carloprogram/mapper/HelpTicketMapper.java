@@ -9,8 +9,6 @@ import org.mapstruct.factory.Mappers;
 @Mapper(componentModel = "spring", uses = {EmployeeMapper.class, TicketRemarksMapper.class})
 public interface HelpTicketMapper {
 
-    HelpTicketMapper INSTANCE = Mappers.getMapper(HelpTicketMapper.class);
-
     @Mapping(target = "createdBy", source = "createdBy.id")
     @Mapping(target = "updatedBy", source = "updatedBy.id")
     HelpTicketDto mapToTicketDto(HelpTicket ticket);
@@ -19,6 +17,7 @@ public interface HelpTicketMapper {
     @Mapping(target = "createdBy", ignore = true)
     @Mapping(target = "updatedBy", ignore = true)
     @Mapping(target = "remarks", ignore = true)
+    @Mapping(target = "deleted", ignore = true)
     HelpTicket mapToTicket(HelpTicketDto dto);
 
 }

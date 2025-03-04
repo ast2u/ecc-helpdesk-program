@@ -9,8 +9,6 @@ import org.mapstruct.factory.Mappers;
 @Mapper(componentModel = "spring")
 public interface TicketRemarksMapper {
 
-    TicketRemarksMapper INSTANCE = Mappers.getMapper(TicketRemarksMapper.class);
-
     @Mapping(source = "ticket.id", target = "ticketId")
     @Mapping(source = "employeeId.id", target = "employeeId")
     TicketRemarksDto mapToTicketRemarksDto(TicketRemarks ticketRemarks);

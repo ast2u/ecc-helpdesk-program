@@ -9,8 +9,6 @@ import org.mapstruct.factory.Mappers;
 @Mapper(componentModel = "spring")
 public interface EmployeeRoleMapper {
 
-    EmployeeRoleMapper INSTANCE = Mappers.getMapper(EmployeeRoleMapper.class);
-
     EmployeeRoleDto mapToEmployeeRoleDto(EmployeeRole employeeRole);
 
     @Mapping(target = "employees", ignore = true)

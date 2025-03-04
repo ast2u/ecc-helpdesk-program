@@ -12,8 +12,6 @@ import java.security.SecureRandom;
 @Mapper(componentModel = "spring", uses = EmployeeRoleMapper.class)
 public interface EmployeeMapper {
 
-    EmployeeMapper INSTANCE = Mappers.getMapper(EmployeeMapper.class);
-
     @Mapping(target = "createdBy", source = "createdBy", qualifiedByName = "mapEmployeeToId")
     @Mapping(target = "updatedBy", source = "updatedBy", qualifiedByName = "mapEmployeeToId")
     @Mapping(target = "age", expression = "java(com.carloprogram.util.employee.DateUtil.computeAge(employee.getBirthDate()))")
