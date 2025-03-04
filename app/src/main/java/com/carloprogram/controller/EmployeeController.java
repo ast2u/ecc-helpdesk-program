@@ -27,16 +27,15 @@ public class EmployeeController {
     //Build App Employee Rest API
     @PostMapping
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<EmployeeDto> createEmployee (@Valid @RequestBody EmployeeDto employeeDto,
-                                                       @AuthenticationPrincipal EmployeeUserPrincipal userPrincipal){
-        EmployeeDto savedEmployee = employeeService.createEmployee(employeeDto, userPrincipal);
+    public ResponseEntity<EmployeeDto> createEmployee (@Valid @RequestBody EmployeeDto employeeDto){
+        EmployeeDto savedEmployee = employeeService.createEmployee(employeeDto);
         return new ResponseEntity<>(savedEmployee, HttpStatus.CREATED);
     }
 
     @GetMapping("/me")
     @PreAuthorize("hasAnyAuthority('EMPLOYEE', 'ADMIN')")
-    public ResponseEntity<EmployeeProfileDto> getMyInfo(@AuthenticationPrincipal EmployeeUserPrincipal userPrincipal) {
-        EmployeeProfileDto employeeProfileDtoDto = employeeService.getEmployeeProfile(userPrincipal);
+    public ResponseEntity<EmployeeProfileDto> getMyInfo() {
+        EmployeeProfileDto employeeProfileDtoDto = employeeService.getEmployeeProfile();
         return ResponseEntity.ok(employeeProfileDtoDto);
     }
 
@@ -52,9 +51,8 @@ public class EmployeeController {
     @PatchMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<EmployeeDto> updateEmployee(@PathVariable("id") Long employeeId,
-                                                      @RequestBody EmployeeDto updatedEmployee,
-                                                      @AuthenticationPrincipal EmployeeUserPrincipal userPrincipal){
-        EmployeeDto employeeDto = employeeService.updateEmployeeById(employeeId, updatedEmployee, userPrincipal);
+                                                      @RequestBody EmployeeDto updatedEmployee){
+        EmployeeDto employeeDto = employeeService.updateEmployeeById(employeeId, updatedEmployee);
         return ResponseEntity.ok(employeeDto);
     }
 
@@ -62,9 +60,8 @@ public class EmployeeController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<EmployeeDto> assignRolesToEmployee(
             @PathVariable("id") Long employeeId,
-            @RequestBody List<Long> roleIds,
-            @AuthenticationPrincipal EmployeeUserPrincipal userPrincipal) {
-        EmployeeDto updatedEmployee = employeeService.assignRoleToEmployee(employeeId, roleIds, userPrincipal);
+            @RequestBody List<Long> roleIds) {
+        EmployeeDto updatedEmployee = employeeService.assignRoleToEmployee(employeeId, roleIds);
         return ResponseEntity.ok(updatedEmployee);
     }
 

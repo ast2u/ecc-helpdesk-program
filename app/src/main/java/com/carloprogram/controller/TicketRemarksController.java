@@ -21,9 +21,8 @@ public class TicketRemarksController {
     @PostMapping("/add")
     public ResponseEntity<TicketRemarksDto> createRemark(
             @Valid @RequestBody TicketRemarksDto ticketRemarksDto,
-            @PathVariable("ticketId") Long ticketNumber,
-            @AuthenticationPrincipal EmployeeUserPrincipal userPrincipal) {
-        return ResponseEntity.ok(ticketRemarkService.addRemark(ticketRemarksDto,ticketNumber, userPrincipal));
+            @PathVariable("ticketId") Long ticketNumber) {
+        return ResponseEntity.ok(ticketRemarkService.addRemark(ticketRemarksDto,ticketNumber));
     }
 
     @GetMapping

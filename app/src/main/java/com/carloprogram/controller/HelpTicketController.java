@@ -20,23 +20,20 @@ public class HelpTicketController {
     private TicketService ticketService;
 
     @PostMapping("/create")
-    public ResponseEntity<HelpTicketDto> createTicket(@Valid @RequestBody HelpTicketDto ticketDto,
-                                                      @AuthenticationPrincipal EmployeeUserPrincipal userPrincipal) {
-        return ResponseEntity.ok(ticketService.createTicket(ticketDto, userPrincipal));
+    public ResponseEntity<HelpTicketDto> createTicket(@Valid @RequestBody HelpTicketDto ticketDto) {
+        return ResponseEntity.ok(ticketService.createTicket(ticketDto));
     }
 
     @PatchMapping("/update/{id}")
     public ResponseEntity<HelpTicketDto> updateTicket(@PathVariable("id") Long id,
-                                                      @RequestBody HelpTicketDto ticketDto,
-                                                      @AuthenticationPrincipal EmployeeUserPrincipal userPrincipal) {
-        return ResponseEntity.ok(ticketService.updateTicket(id, ticketDto, userPrincipal));
+                                                      @RequestBody HelpTicketDto ticketDto) {
+        return ResponseEntity.ok(ticketService.updateTicket(id, ticketDto));
     }
 
     @PutMapping("/assign/{id}/{assigneeId}")
     public ResponseEntity<HelpTicketDto> assignTicket(@PathVariable("id") Long id,
-                                                      @PathVariable("assigneeId") Long assigneeId,
-                                                      @AuthenticationPrincipal EmployeeUserPrincipal userPrincipal) {
-        return ResponseEntity.ok(ticketService.assignTicket(id, assigneeId, userPrincipal));
+                                                      @PathVariable("assigneeId") Long assigneeId) {
+        return ResponseEntity.ok(ticketService.assignTicket(id, assigneeId));
     }
 
     @GetMapping

@@ -11,6 +11,7 @@ import com.carloprogram.model.TicketRemarks;
 import com.carloprogram.repository.EmployeeRepository;
 import com.carloprogram.repository.HelpTicketRepository;
 import com.carloprogram.repository.TicketRemarksRepository;
+import com.carloprogram.security.config.SecurityUtil;
 import com.carloprogram.service.TicketRemarksService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,14 +35,17 @@ public class TicketRemarksImpl implements TicketRemarksService {
     @Autowired
     private TicketRemarksMapper ticketRemarksMapper;
 
+    @Autowired
+    private SecurityUtil securityUtil;
+
     @Transactional
     @LogExecution
     @Override
-    public TicketRemarksDto addRemark(TicketRemarksDto ticketRemarksDto, Long ticketNumber, EmployeeUserPrincipal employeeUserPrincipal) {
+    public TicketRemarksDto addRemark(TicketRemarksDto ticketRemarksDto, Long ticketNumber) {
         HelpTicket ticket = helpTicketRepository.findById(ticketNumber)
                 .orElseThrow(() -> new ResourceNotFoundException("Ticket not found with ticketNumber: " + ticketNumber));
 
-        Employee currentUser = employeeUserPrincipal.getEmployee();
+        Employee currentUser = securityUtil.getAuthenticatedEmployee();
 
         TicketRemarks remark = ticketRemarksMapper.mapToTicketRemarks(ticketRemarksDto);
         remark.setTicket(ticket);

@@ -15,6 +15,7 @@ import com.carloprogram.model.enums.EmploymentStatus;
 import com.carloprogram.repository.EmployeeRepository;
 import com.carloprogram.dto.EmployeeDto;
 import com.carloprogram.repository.EmployeeRoleRepository;
+import com.carloprogram.security.config.SecurityUtil;
 import com.carloprogram.security.service.JwtService;
 import com.carloprogram.service.EmployeeService;
 import com.carloprogram.specification.EmployeeSpecification;
@@ -63,6 +64,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Autowired
     private EmployeeProfileMapper profileMapper;
+
+    @Autowired
+    private SecurityUtil securityUtil;
+
     /**
      TODO: Implement method for changing password for employee user
      */
@@ -94,9 +99,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Transactional
     @LogExecution
     @Override
-    public EmployeeDto createEmployee(EmployeeDto employeeDto, EmployeeUserPrincipal userPrincipal) {
-        Employee currentUser = employeeRepository.findById(userPrincipal.getEmployee().getId())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    public EmployeeDto createEmployee(EmployeeDto employeeDto) {
+        Employee currentUser = securityUtil.getAuthenticatedEmployee();
 
         Employee employee = employeeMapper.mapToEmployee(employeeDto);
         employee.setPassword(encoder.encode("Passw0rd123"));
@@ -125,13 +129,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Transactional(readOnly = true)
     @Override
-    public EmployeeProfileDto getEmployeeProfile(EmployeeUserPrincipal userPrincipal) {
-        Employee employee = employeeRepository.findByIdAndDeletedFalse(userPrincipal
-                        .getEmployee()
-                        .getId())
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Employee does not exist"));
-
+    public EmployeeProfileDto getEmployeeProfile() {
+        Employee employee = securityUtil.getAuthenticatedEmployee();
         return profileMapper.toProfileDto(employee);
     }
 
@@ -151,11 +150,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Transactional
     @LogExecution
     @Override
-    public EmployeeDto updateEmployeeById(Long employeeId, EmployeeDto updatedEmployee, EmployeeUserPrincipal userPrincipal) {
+    public EmployeeDto updateEmployeeById(Long employeeId, EmployeeDto updatedEmployee) {
+        Employee currentUser = securityUtil.getAuthenticatedEmployee();
+
         Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: " + employeeId));
-
-        Employee currentUser = userPrincipal.getEmployee(); // Get the logged-in user directly
 
         // Only update fields if provided
         Optional.ofNullable(updatedEmployee.getFirstName()).ifPresent(employee::setFirstName);
@@ -183,7 +182,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @LogExecution
     @Override
     public void deleteEmployeeById(Long employeeId) {
-        Employee employee = employeeRepository.findById(employeeId)
+        Employee employee = employeeRepository.findByIdAndDeletedFalse(employeeId)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Employee does not exists " +
                                 "with given id: "+ employeeId));
@@ -194,12 +193,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional
     @LogExecution
-    public EmployeeDto assignRoleToEmployee(Long employeeId, List<Long> roleIds, EmployeeUserPrincipal userPrincipal) {
+    public EmployeeDto assignRoleToEmployee(Long employeeId, List<Long> roleIds) {
         Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new ResourceNotFoundException("Employee not found with ID: " + employeeId));
 
-        Employee currentUser = employeeRepository.findById(userPrincipal.getEmployee().getId())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        Employee currentUser = securityUtil.getAuthenticatedEmployee();
 
         List<EmployeeRole> roles = roleIds.stream()
                 .map(roleId -> employeeRoleRepository.findById(roleId)
