@@ -39,6 +39,13 @@ public class TicketSpecification {
             if(searchRequest.getUpdatedStart() != null && searchRequest.getUpdatedEnd() != null){
                 predicates.add(criteriaBuilder.between(root.get("updatedDate"), searchRequest.getUpdatedStart(), searchRequest.getUpdatedEnd()));
             }
+
+            if(searchRequest.isDeleted()){
+                predicates.add(criteriaBuilder.equal(root.get("deleted"), searchRequest.isDeleted()));
+            }else{
+                predicates.add(criteriaBuilder.isFalse(root.get("deleted")));
+            }
+
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
     }

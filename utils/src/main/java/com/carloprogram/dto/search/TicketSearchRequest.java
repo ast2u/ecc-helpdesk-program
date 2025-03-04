@@ -17,6 +17,7 @@ public class TicketSearchRequest {
     private Long createdBy;
     private Long updatedBy;
     private Long assignee;
+    private boolean deleted;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime createdStart;
