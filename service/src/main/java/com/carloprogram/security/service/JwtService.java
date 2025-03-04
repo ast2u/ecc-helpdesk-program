@@ -1,55 +1,41 @@
 package com.carloprogram.security.service;
 
 import com.carloprogram.model.EmployeeUserPrincipal;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.security.core.GrantedAuthority;
+import io.jsonwebtoken.security.SecurityException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
-import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Service
 public class JwtService {
 
-    private String secretKey = "";
+    @Value("${jwt.secret}")
+    private String secret;
 
-    public JwtService(){
-        try{
-            KeyGenerator keyGenerator = KeyGenerator.getInstance("HmacSHA256");
-            SecretKey sk = keyGenerator.generateKey();
-            secretKey = Base64.getEncoder().encodeToString(sk.getEncoded());
-        }catch (NoSuchAlgorithmException e){
-            throw new RuntimeException(e);
-        }
-    }
+    @Value("${jwt.expiration}")
+    private long expirationTime;
+
+    private static final Logger logger = LoggerFactory.getLogger(JwtService.class);
 
     private SecretKey getKey(){
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+        byte[] keyBytes = Decoders.BASE64.decode(secret);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
     public String generateToken(EmployeeUserPrincipal principal){
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("roles", principal.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList()));
-
         return Jwts.builder()
-                .setClaims(claims)
                 .setSubject(principal.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 60 * 60 * 1000))
+                .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
                 .signWith(getKey())
                 .compact();
     }
@@ -64,15 +50,38 @@ public class JwtService {
     }
 
     private Claims extractAllClaims(String token){
-        return Jwts.parserBuilder()
-                .setSigningKey(getKey())
-                .build()
-                .parseClaimsJws(token).getBody();
+        try {
+            return Jwts.parserBuilder()
+                    .setSigningKey(getKey())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (ExpiredJwtException e) {
+            logger.warn("Token expired: {}", e.getMessage());
+            throw e;
+        } catch (MalformedJwtException e) {
+            logger.warn("Malformed token: {}", e.getMessage());
+            throw e;
+        } catch (UnsupportedJwtException e) {
+            logger.warn("Unsupported token: {}", e.getMessage());
+            throw e;
+        } catch (SecurityException e){
+            logger.warn("JWT signature does not match: {}", e.getMessage());
+            throw new JwtException("Invalid JWT signature");
+        } catch (JwtException e) {
+            logger.warn("JWT error: {}", e.getMessage());
+            throw e;
+        }
     }
 
     public boolean validateToken(String token, UserDetails userDetails) {
-        final String userName = extractUserName(token);
-        return (userName.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        try {
+            final String userName = extractUserName(token);
+            return (userName.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        } catch (JwtException e) {
+            logger.warn("Token validation failed: {}", e.getMessage());
+            return false;
+        }
     }
 
     private boolean isTokenExpired(String token){
