@@ -24,12 +24,16 @@ public class TicketSpecification {
             if(searchRequest.getStatus() != null){
                 predicates.add(criteriaBuilder.equal(root.get("status"), searchRequest.getStatus()));
             }
+
             if(searchRequest.getCreatedBy() != null){
-                predicates.add(criteriaBuilder.equal(root.get("createdBy").get("id"), searchRequest.getCreatedBy()));
+                String pattern = "%" + searchRequest.getCreatedBy().toLowerCase() + "%";
+                predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("createdBy")), pattern));
             }
             if(searchRequest.getUpdatedBy() != null){
-                predicates.add(criteriaBuilder.equal(root.get("updatedBy").get("id"), searchRequest.getUpdatedBy()));
+                String pattern = "%" + searchRequest.getUpdatedBy().toLowerCase() + "%";
+                predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("updatedBy")), pattern));
             }
+
             if(searchRequest.getAssignee() != null){
                 predicates.add(criteriaBuilder.equal(root.get("assignee").get("id"), searchRequest.getAssignee()));
             }

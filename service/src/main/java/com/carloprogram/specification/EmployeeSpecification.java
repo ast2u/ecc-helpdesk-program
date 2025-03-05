@@ -38,6 +38,15 @@ public class EmployeeSpecification {
                 predicates.add(criteriaBuilder.isFalse(root.get("deleted")));
             }
 
+            if(searchRequest.getCreatedBy() != null){
+                String pattern = "%" + searchRequest.getCreatedBy().toLowerCase() + "%";
+                predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("createdBy")), pattern));
+            }
+            if(searchRequest.getUpdatedBy() != null){
+                String pattern = "%" + searchRequest.getUpdatedBy().toLowerCase() + "%";
+                predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("updatedBy")), pattern));
+            }
+
             if(searchRequest.getRoles() != null){
                 predicates.add(root.join("employeeRoles").get("id").in(searchRequest.getRoles()));
             }
