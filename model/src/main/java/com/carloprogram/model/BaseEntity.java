@@ -15,6 +15,10 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 public abstract class BaseEntity {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -23,15 +27,10 @@ public abstract class BaseEntity {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "created_by", updatable = false)
-    @JsonIgnore
-    private Employee createdBy;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "updated_by")
-    @JsonIgnore
-    private Employee updatedBy;
+    @Column(name = "created_by", updatable = false)
+    private String createdBy;
+    @Column(name = "updated_by")
+    private String updatedBy;
 
     @Column(name = "deleted", nullable = false)
     private boolean deleted = false;

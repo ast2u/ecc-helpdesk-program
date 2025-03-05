@@ -21,10 +21,6 @@ import java.util.UUID;
 @Table(name = "help_tickets")
 public class HelpTicket extends BaseEntity{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     @Column(name = "ticket_number", unique = true, nullable = false, updatable = false)
     private String ticketNumber;
 

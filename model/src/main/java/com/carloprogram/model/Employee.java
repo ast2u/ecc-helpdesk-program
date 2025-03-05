@@ -22,10 +22,6 @@ import java.util.Set;
 @Table(name = "employees")
 public class Employee extends BaseEntity{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     @Column(name = "first_name", nullable = false)
     private String firstName;
 
