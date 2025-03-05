@@ -33,11 +33,6 @@
 
         <dependency>
             <groupId>com.carloprogram</groupId>
-            <artifactId>model</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.carloprogram</groupId>
             <artifactId>service</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>

@@ -47,13 +47,6 @@ public class JwtFilter extends OncePerRequestFilter {
             UserDetails userDetails = context.getBean(EmployeeUserDetailsServiceImpl.class)
                     .loadUserByUsername(username);
 
-            //Might not need this anymore
-            if(userDetails instanceof EmployeeUserPrincipal employeeUserPrincipal &&
-            employeeUserPrincipal.getEmployee().isDeleted()){
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "User is deleted");
-                return;
-            }
-
             if(jwtService.validateToken(token, userDetails)){
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(userDetails,
