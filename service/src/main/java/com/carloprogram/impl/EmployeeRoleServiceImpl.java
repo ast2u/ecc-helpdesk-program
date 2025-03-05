@@ -80,11 +80,7 @@ public class EmployeeRoleServiceImpl implements EmployeeRoleService {
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Role does not exist " +
                                 "with given id: " + employeeRoleId));
-        for(Employee employee : employeeRole.getEmployees()){
-            employee.removeRole(employeeRole);
-            employeeRepository.save(employee);
-        }
 
-        employeeRoleRepository.deleteById(employeeRoleId);
+        employeeRoleRepository.delete(employeeRole);
     }
 }

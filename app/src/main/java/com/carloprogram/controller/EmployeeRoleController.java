@@ -48,15 +48,8 @@ public class EmployeeRoleController {
     //Build delete role rest api
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteEmployeeRole(@PathVariable("id") Long employeeRoleId){
-        // fix if possible
-        try{
-            EmployeeRoleDto employeeRole = employeeRoleService.getEmployeeRoleById(employeeRoleId);
-            String roleTitle = employeeRole.getRole_title();
-            employeeRoleService.deleteEmployeeRoleById(employeeRoleId);
-            return ResponseEntity.ok("Role name: "+ roleTitle +" deleted successfully!");
-        }catch (RuntimeException ex){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: "+ ex.getMessage());
-        }
+        employeeRoleService.deleteEmployeeRoleById(employeeRoleId);
+        return ResponseEntity.ok("Role deleted successfully!");
 
     }
 

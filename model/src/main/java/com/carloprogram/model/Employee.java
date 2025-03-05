@@ -55,11 +55,4 @@ public class Employee extends BaseEntity{
     )
     private List<EmployeeRole> employeeRoles = new ArrayList<>();
 
-    public void removeRole(EmployeeRole role){
-        if(employeeRoles != null){
-            this.employeeRoles.remove(role);
-        }
-    }
-
-
 }
