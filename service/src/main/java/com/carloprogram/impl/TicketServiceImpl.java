@@ -47,8 +47,8 @@ public class TicketServiceImpl implements TicketService {
 
         HelpTicket ticket = ticketMapper.mapToTicket(helpTicketDto);
         ticket.setAssignee(null);
-        ticket.setCreatedBy(currentUser);
-        ticket.setUpdatedBy(currentUser);
+        ticket.setCreatedBy(currentUser.getUsername());
+        ticket.setUpdatedBy(currentUser.getUsername());
         ticket.setRemarks(null);
 
         if(ticket.getStatus() == null ){
@@ -74,7 +74,7 @@ public class TicketServiceImpl implements TicketService {
         }
 
         HelpTicketUtil.updateTicketFields(ticket, helpTicketDto);
-        ticket.setUpdatedBy(currentUser);
+        ticket.setUpdatedBy(currentUser.getUsername());
 
         ticket = helpTicketRepository.save(ticket);
         return ticketMapper.mapToTicketDto(ticket);
@@ -97,7 +97,7 @@ public class TicketServiceImpl implements TicketService {
         }
 
         ticket.setAssignee(assignee);
-        ticket.setUpdatedBy(currentUser);
+        ticket.setUpdatedBy(currentUser.getUsername());
 
         ticket = helpTicketRepository.save(ticket);
 
@@ -122,13 +122,12 @@ public class TicketServiceImpl implements TicketService {
     public HelpTicketDto getTicketById(Long id) {
         HelpTicket ticket = helpTicketRepository.findByIdAndDeletedFalse(id)
                 .orElseThrow(()-> new ResourceNotFoundException("Ticket id does not exists " +
-                        "with given ticket number: "+ id));
+                        "with given id: "+ id));
 
         return ticketMapper.mapToTicketDto(ticket);
 
     }
 
-    //Can only be deleted by an employee (to clarify can be deleted by admin)
     // Removed?
     @Transactional
     @Override
@@ -136,7 +135,9 @@ public class TicketServiceImpl implements TicketService {
         HelpTicket ticket = helpTicketRepository.findByIdAndDeletedFalse(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Ticket does not exists " +
-                                "with given Ticket Number: "+ id));
+                                "with given TicketId: "+ id));
+        Employee currentUser = securityUtil.getAuthenticatedEmployee();
+        ticket.setUpdatedBy(currentUser.getUsername());
         ticket.setDeleted(true);
         helpTicketRepository.save(ticket);
     }

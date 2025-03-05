@@ -7,9 +7,6 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring", uses = {EmployeeMapper.class, TicketRemarksMapper.class})
 public interface HelpTicketMapper {
-
-    @Mapping(target = "createdBy", source = "createdBy.id")
-    @Mapping(target = "updatedBy", source = "updatedBy.id")
     HelpTicketDto mapToTicketDto(HelpTicket ticket);
 
     @Mapping(target = "assignee", ignore = true)

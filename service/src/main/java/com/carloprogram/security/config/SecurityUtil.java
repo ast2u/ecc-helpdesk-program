@@ -29,9 +29,7 @@ public class SecurityUtil {
     }
 
     public Employee getAuthenticatedEmployee() {
-        EmployeeUserPrincipal userPrincipal = getAuthenticatedUser();
-
-        return employeeRepository.findByIdAndDeletedFalse(userPrincipal.getEmployee().getId())
+        return employeeRepository.findByUsernameAndDeletedFalse(getAuthenticatedUser().getUsername())
                 .orElseThrow(() -> new ResourceNotFoundException("Employee does not exist"));
     }
 }

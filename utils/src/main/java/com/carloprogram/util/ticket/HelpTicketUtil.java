@@ -14,7 +14,7 @@ public class HelpTicketUtil {
         boolean isAdmin = user.getEmployeeRoles().stream()
                 .anyMatch(role -> role.getRole_title().equals("ADMIN"));
 
-        boolean isCreator = ticket.getCreatedBy().getId().equals(user.getId());
+        boolean isCreator = ticket.getCreatedBy().equals(user.getUsername());
         boolean isAssignee = ticket.getAssignee() != null && ticket.getAssignee().getId().equals(user.getId());
 
         return !isAdmin && !isCreator && !isAssignee;

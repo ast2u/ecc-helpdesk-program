@@ -20,6 +20,7 @@ import com.carloprogram.security.service.JwtService;
 import com.carloprogram.service.EmployeeService;
 import com.carloprogram.specification.EmployeeSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -120,23 +121,27 @@ public class EmployeeServiceImpl implements EmployeeService {
             employee.setEmploymentStatus(EmploymentStatus.FULL_TIME);
         }
 
-        employee.setCreatedBy(currentUser);
-        employee.setUpdatedBy(currentUser);
+        employee.setCreatedBy(currentUser.getUsername());
+        employee.setUpdatedBy(currentUser.getUsername());
 
         Employee savedEmployee = employeeRepository.save(employee);
         return employeeMapper.mapToEmployeeDto(savedEmployee);
     }
 
+    //@Cacheable(value = "employeeProfileCache", key = "#securityUtil.getAuthenticatedUser().id")
     @Transactional(readOnly = true)
     @Override
     public EmployeeProfileDto getEmployeeProfile() {
+        System.out.println("<--Caching started!-->");
         Employee employee = securityUtil.getAuthenticatedEmployee();
         return profileMapper.toProfileDto(employee);
     }
 
+    //@Cacheable(value = "employeesCache", key = "#searchRequest.hashCode()")
     @Transactional(readOnly = true)
     @Override
     public Page<EmployeeDto> getAllEmployees(EmployeeSearchRequest searchRequest) {
+        System.out.println("<--Caching started!-->");
         Specification<Employee> spec = EmployeeSpecification.filterEmployees(searchRequest);
 
         Pageable pageable = PageRequest.of(searchRequest.getPage(), searchRequest.getSize(),
@@ -172,7 +177,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             employee.setEmployeeRoles(roles);
         }
 
-        employee.setUpdatedBy(currentUser);
+        employee.setUpdatedBy(currentUser.getUsername());
 
         Employee updatedEmployeeObj = employeeRepository.save(employee);
         return employeeMapper.mapToEmployeeDto(updatedEmployeeObj);
@@ -205,8 +210,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .collect(Collectors.toList());
 
         employee.setEmployeeRoles(roles);
-
-        employee.setUpdatedBy(currentUser);
+        employee.setUpdatedBy(currentUser.getUsername());
 
         Employee updatedEmployee = employeeRepository.save(employee);
 
