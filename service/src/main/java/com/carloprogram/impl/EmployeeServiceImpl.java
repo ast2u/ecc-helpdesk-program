@@ -20,6 +20,8 @@ import com.carloprogram.security.service.JwtService;
 import com.carloprogram.service.EmployeeService;
 import com.carloprogram.specification.EmployeeSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -68,10 +70,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Autowired
     private SecurityUtil securityUtil;
-
-    /**
-     TODO: Implement method for changing password for employee user
-     */
 
     @Override
     @LogExecution
@@ -128,20 +126,18 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeMapper.mapToEmployeeDto(savedEmployee);
     }
 
-    //@Cacheable(value = "employeeProfileCache", key = "#securityUtil.getAuthenticatedUser().id")
+    //@Cacheable(value = "employees", key = "#employee.id")
     @Transactional(readOnly = true)
     @Override
     public EmployeeProfileDto getEmployeeProfile() {
-        System.out.println("<--Caching started!-->");
+        System.out.println("<--Caching started for Profile!-->");
         Employee employee = securityUtil.getAuthenticatedEmployee();
         return profileMapper.toProfileDto(employee);
     }
 
-    //@Cacheable(value = "employeesCache", key = "#searchRequest.hashCode()")
     @Transactional(readOnly = true)
     @Override
     public Page<EmployeeDto> getAllEmployees(EmployeeSearchRequest searchRequest) {
-        System.out.println("<--Caching started!-->");
         Specification<Employee> spec = EmployeeSpecification.filterEmployees(searchRequest);
 
         Pageable pageable = PageRequest.of(searchRequest.getPage(), searchRequest.getSize(),
@@ -152,6 +148,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeePage.map(employeeMapper::mapToEmployeeDto);
     }
 
+    //@CachePut(value = "employees", key = "#employeeId")
     @Transactional
     @LogExecution
     @Override
@@ -183,6 +180,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeMapper.mapToEmployeeDto(updatedEmployeeObj);
     }
 
+    //@CacheEvict(value = "employees", key = "#employeeId")
     @Transactional
     @LogExecution
     @Override
@@ -195,6 +193,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeRepository.save(employee);
     }
 
+    //@CachePut(value = "employees", key = "#employeeId")
     @Override
     @Transactional
     @LogExecution
