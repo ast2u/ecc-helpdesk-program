@@ -126,7 +126,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeMapper.mapToEmployeeDto(savedEmployee);
     }
 
-    //@Cacheable(value = "employees", key = "#employee.id")
+    @Cacheable(value = "employees", keyGenerator = "employeeCacheKeyGenerator")
     @Transactional(readOnly = true)
     @Override
     public EmployeeProfileDto getEmployeeProfile() {
@@ -135,6 +135,30 @@ public class EmployeeServiceImpl implements EmployeeService {
         return profileMapper.toProfileDto(employee);
     }
 
+    @CachePut(value = "employees", keyGenerator = "employeeCacheKeyGenerator")
+    @Transactional
+    @LogExecution
+    @Override
+    public EmployeeProfileDto updateEmployeeProfile(EmployeeProfileDto employeeProfile){
+        Employee currentUser = securityUtil.getAuthenticatedEmployee();
+
+        Employee employee = employeeRepository.findById(currentUser.getId())
+                        .orElseThrow(() -> new ResourceNotFoundException("Employee not editable"));
+
+        Optional.ofNullable(employeeProfile.getFirstName()).ifPresent(employee::setFirstName);
+        Optional.ofNullable(employeeProfile.getLastName()).ifPresent(employee::setLastName);
+        Optional.ofNullable(employeeProfile.getUsername()).ifPresent(employee::setUsername);
+        Optional.ofNullable(employeeProfile.getBirthDate()).ifPresent(employee::setBirthDate);
+        Optional.ofNullable(employeeProfile.getAddress()).ifPresent(employee::setAddress);
+        Optional.ofNullable(employeeProfile.getContactNumber()).ifPresent(employee::setContactNumber);
+
+        employee.setUpdatedBy(currentUser.getUsername());
+
+        Employee updatedProfile = employeeRepository.save(employee);
+        return profileMapper.toProfileDto(updatedProfile);
+    }
+
+    //@Cacheable(value = "employeeList", key = "'page=' + (#searchRequest?.page ?: 0) + '_size=' + (#searchRequest?.size ?: 4) + '_filters=' + (#searchRequest != null ? #searchRequest.toString() : 'default')")
     @Transactional(readOnly = true)
     @Override
     public Page<EmployeeDto> getAllEmployees(EmployeeSearchRequest searchRequest) {
@@ -148,7 +172,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeePage.map(employeeMapper::mapToEmployeeDto);
     }
 
-    //@CachePut(value = "employees", key = "#employeeId")
+    //@CacheEvict(value = "employeeList", allEntries = true)
     @Transactional
     @LogExecution
     @Override
@@ -168,8 +192,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         if (updatedEmployee.getEmployeeRoles() != null) {
             List<EmployeeRole> roles = updatedEmployee.getEmployeeRoles().stream()
-                    .map(roleDto -> employeeRoleRepository.findById(roleDto.getId()).orElse(null))
-                    .filter(Objects::nonNull)
+                    .map(roleDto -> employeeRoleRepository.findById(roleDto.getId()))
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
                     .collect(Collectors.toList());
             employee.setEmployeeRoles(roles);
         }
@@ -180,7 +205,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeMapper.mapToEmployeeDto(updatedEmployeeObj);
     }
 
-    //@CacheEvict(value = "employees", key = "#employeeId")
+    //@CacheEvict(value = "employeeList", allEntries = true)
     @Transactional
     @LogExecution
     @Override
@@ -193,7 +218,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeRepository.save(employee);
     }
 
-    //@CachePut(value = "employees", key = "#employeeId")
+    //@CacheEvict(value = "employeeList", allEntries = true)
     @Override
     @Transactional
     @LogExecution
