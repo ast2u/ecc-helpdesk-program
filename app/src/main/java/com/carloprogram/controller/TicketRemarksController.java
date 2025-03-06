@@ -3,7 +3,6 @@ package com.carloprogram.controller;
 import com.carloprogram.dto.TicketRemarksDto;
 import com.carloprogram.service.TicketRemarksService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,8 +12,11 @@ import java.util.List;
 @RequestMapping("/api/tickets/{ticketId}/remarks")
 public class TicketRemarksController {
 
-    @Autowired
-    private TicketRemarksService ticketRemarkService;
+    private final TicketRemarksService ticketRemarkService;
+
+    public TicketRemarksController(TicketRemarksService ticketRemarkService){
+        this.ticketRemarkService = ticketRemarkService;
+    }
 
     @PostMapping("/add")
     public ResponseEntity<TicketRemarksDto> createRemark(

@@ -4,7 +4,6 @@ import com.carloprogram.dto.HelpTicketDto;
 import com.carloprogram.dto.search.TicketSearchRequest;
 import com.carloprogram.service.TicketService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,8 +12,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/tickets")
 public class HelpTicketController {
 
-    @Autowired
-    private TicketService ticketService;
+    private final TicketService ticketService;
+
+    public HelpTicketController(TicketService ticketService){
+        this.ticketService = ticketService;
+    }
 
     @PostMapping("/create")
     public ResponseEntity<HelpTicketDto> createTicket(@Valid @RequestBody HelpTicketDto ticketDto) {

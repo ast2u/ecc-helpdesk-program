@@ -19,14 +19,14 @@ import java.util.stream.Collectors;
 @Service
 public class EmployeeRoleServiceImpl implements EmployeeRoleService {
 
-    @Autowired
-    private EmployeeRoleRepository employeeRoleRepository;
+    private final EmployeeRoleRepository employeeRoleRepository;
+    private final EmployeeRoleMapper employeeRoleMapper;
 
-    @Autowired
-    private EmployeeRepository employeeRepository;
-
-    @Autowired
-    private EmployeeRoleMapper employeeRoleMapper;
+    public EmployeeRoleServiceImpl(EmployeeRoleRepository employeeRoleRepository,
+                                   EmployeeRoleMapper employeeRoleMapper){
+        this.employeeRoleRepository = employeeRoleRepository;
+        this.employeeRoleMapper = employeeRoleMapper;
+    }
 
     @Transactional
     @LogExecution

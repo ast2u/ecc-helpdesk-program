@@ -3,7 +3,6 @@ package com.carloprogram.controller;
 import com.carloprogram.dto.EmployeeRoleDto;
 import com.carloprogram.service.EmployeeRoleService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,10 +11,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/employee_roles")
-public class EmployeeRoleController {
+public class    EmployeeRoleController {
 
-    @Autowired
-    private EmployeeRoleService employeeRoleService;
+    private final EmployeeRoleService employeeRoleService;
+
+    public EmployeeRoleController(EmployeeRoleService employeeRoleService){
+        this.employeeRoleService = employeeRoleService;
+    }
 
     //Build Create role Rest API
     @PostMapping
