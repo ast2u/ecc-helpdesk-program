@@ -1,7 +1,6 @@
 package com.carloprogram.security.config;
 
 import com.carloprogram.impl.EmployeeUserDetailsServiceImpl;
-import com.carloprogram.model.EmployeeUserPrincipal;
 import com.carloprogram.security.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -38,24 +37,24 @@ public class JwtFilter extends OncePerRequestFilter {
         if(authHeader != null && authHeader.startsWith("Bearer ")){
             token = authHeader.substring(7);
             username = jwtService.extractUserName(token);
-        }
+        } //
 
         if(username != null && SecurityContextHolder
                 .getContext()
-                .getAuthentication() == null ){
+                .getAuthentication() == null ){ //
 
             UserDetails userDetails = context.getBean(EmployeeUserDetailsServiceImpl.class)
-                    .loadUserByUsername(username);
+                    .loadUserByUsername(username); //
 
-            if(jwtService.validateToken(token, userDetails)){
+            if(jwtService.validateToken(token, userDetails)){ //
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(userDetails,
                                 null,userDetails.getAuthorities());
                 authToken.setDetails(new WebAuthenticationDetailsSource()
-                        .buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+                        .buildDetails(request)); //
+                SecurityContextHolder.getContext().setAuthentication(authToken); //
             }
         }
-        filterChain.doFilter(request, response);
+        filterChain.doFilter(request, response); //
     }
 }
