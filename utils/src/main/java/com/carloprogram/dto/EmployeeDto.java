@@ -40,6 +40,6 @@ public class EmployeeDto extends BaseDto{
 
     private String contactNumber;
     private EmploymentStatus employmentStatus;
-    private List<EmployeeRoleDto> employeeRoles = new ArrayList<>();
+    private List<EmployeeRoleDto> employeeRoles;
 
 }
