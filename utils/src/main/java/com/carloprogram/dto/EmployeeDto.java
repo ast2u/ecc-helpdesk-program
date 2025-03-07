@@ -23,6 +23,6 @@ public class EmployeeDto {
     private String address;
     private String contactNumber;
     private EmploymentStatus employmentStatus;
-    private List<EmployeeRoleDto> employeeRoleIds = new ArrayList<>();
+    private List<EmployeeRoleDto> employeeRoleIds;
 
 }
