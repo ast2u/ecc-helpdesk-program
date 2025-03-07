@@ -126,7 +126,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeMapper.mapToEmployeeDto(savedEmployee);
     }
 
-    @Cacheable(value = "employees", keyGenerator = "employeeCacheKeyGenerator")
+    //@Cacheable(value = "employees", keyGenerator = "employeeCacheKeyGenerator")
     @Transactional(readOnly = true)
     @Override
     public EmployeeProfileDto getEmployeeProfile() {
@@ -135,7 +135,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         return profileMapper.toProfileDto(employee);
     }
 
-    @CachePut(value = "employees", keyGenerator = "employeeCacheKeyGenerator")
+    //@CachePut(value = "employees", keyGenerator = "employeeCacheKeyGenerator")
     @Transactional
     @LogExecution
     @Override
