@@ -34,7 +34,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -80,18 +79,13 @@ public class EmployeeServiceImpl implements EmployeeService {
                             , loginRequest.getPassword()));
 
             EmployeeUserPrincipal userPrincipal = (EmployeeUserPrincipal) authentication.getPrincipal();
-
-            Employee employee = employeeRepository.findByUsernameAndDeletedFalse(userPrincipal.getUsername())
-                    .orElseThrow(() -> new UsernameNotFoundException("Employee not found"));
-
-            EmployeeDto employeeDto = employeeMapper.mapToEmployeeDto(employee);
-
             String token = jwtService.generateToken(userPrincipal);
 
-            return ResponseEntity.ok(new LoginResponse(token,employeeDto));
+            return ResponseEntity.ok(new LoginResponse(token,null));
 
         }catch(BadCredentialsException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new LoginResponse(null, "Invalid username or password"));
         }
     }
 
