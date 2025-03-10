@@ -5,7 +5,6 @@ import com.carloprogram.exception.ResourceNotFoundException;
 import com.carloprogram.logging.LogExecution;
 import com.carloprogram.mapper.TicketRemarksMapper;
 import com.carloprogram.model.Employee;
-import com.carloprogram.model.EmployeeUserPrincipal;
 import com.carloprogram.model.HelpTicket;
 import com.carloprogram.model.TicketRemarks;
 import com.carloprogram.repository.EmployeeRepository;

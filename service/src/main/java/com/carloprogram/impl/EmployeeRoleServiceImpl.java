@@ -4,12 +4,9 @@ import com.carloprogram.dto.EmployeeRoleDto;
 import com.carloprogram.exception.ResourceNotFoundException;
 import com.carloprogram.logging.LogExecution;
 import com.carloprogram.mapper.EmployeeRoleMapper;
-import com.carloprogram.model.Employee;
 import com.carloprogram.model.EmployeeRole;
-import com.carloprogram.repository.EmployeeRepository;
 import com.carloprogram.repository.EmployeeRoleRepository;
 import com.carloprogram.service.EmployeeRoleService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

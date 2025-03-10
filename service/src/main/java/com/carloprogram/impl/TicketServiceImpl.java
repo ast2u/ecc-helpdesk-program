@@ -7,7 +7,6 @@ import com.carloprogram.exception.UnauthorizedException;
 import com.carloprogram.logging.LogExecution;
 import com.carloprogram.mapper.HelpTicketMapper;
 import com.carloprogram.model.Employee;
-import com.carloprogram.model.EmployeeUserPrincipal;
 import com.carloprogram.security.config.SecurityUtil;
 import com.carloprogram.specification.TicketSpecification;
 import com.carloprogram.model.HelpTicket;
