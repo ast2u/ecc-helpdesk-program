@@ -81,11 +81,11 @@ public class EmployeeServiceImpl implements EmployeeService {
             EmployeeUserPrincipal userPrincipal = (EmployeeUserPrincipal) authentication.getPrincipal();
             String token = jwtService.generateToken(userPrincipal);
 
-            return ResponseEntity.ok(new LoginResponse(token,null));
+            return ResponseEntity.ok(new LoginResponse(true,token,"Login successful"));
 
         }catch(BadCredentialsException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new LoginResponse(null, "Invalid username or password"));
+                    .body(new LoginResponse(false, null, "Invalid username or password"));
         }
     }
 
