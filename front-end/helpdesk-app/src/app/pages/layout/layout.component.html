@@ -1,20 +1,69 @@
-<nav class="navbar navbar-expand-lg bg-body-tertiary">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="#">HelpDesk</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Home</a>
-          </li>
-          <li class="nav-item d-flex" *ngIf="isLoggedIn">
-            <a class="nav-link active" (click)="onLogout()" aria-current="page" href="#">Logout</a> 
-            <!-- must be right -->
-          </li>
-        </ul>
-      </div>
+<div class="d-flex">
+  <aside id="sidebar" class="sidebar-toggle">
+    <div class="sidebar-logo">
+      <a href="/">HelpDesk</a>
     </div>
-  </nav>
-  <router-outlet></router-outlet>
+    <ul class="sidebar-nav p-0">
+      <li class="sidebar-header">Admin Tools</li>
+      <li class="sidebar-items">
+        <a href="/" class="sidebar-link">
+          <i class="fas fa-users"></i>
+          <span>Employees</span>
+        </a>
+      </li>
+      <li class="sidebar-items">
+        <a href="/" class="sidebar-link">
+          <i class="fas fa-user-tie"></i>
+          <span>Employee Roles</span>
+        </a>
+      </li>
+      <li class="sidebar-header">Manage, Create & View</li>
+      <li class="sidebar-items">
+        <a href="/" class="sidebar-link">
+          <i class="fas fa-ticket"></i>
+          <span>Tickets</span>
+        </a>
+      </li>
+      <li class="sidebar-items">
+        <a href="/" class="sidebar-link">
+          <i class="fas fa-ticket-simple"></i>
+          <span>Assigned Tickets</span>
+        </a>
+      </li>
+      <li class="sidebar-items">
+        <a href="/" class="sidebar-link">
+          <i class="fas fa-circle-check"></i>
+          <span>Created Tickets</span>
+        </a>
+      </li>
+      <li class="sidebar-header">Profile Management</li>
+      <li class="sidebar-items">
+        <a href="/" class="sidebar-link">
+          <i class="fas fa-address-card"></i>
+          <span>Edit Profile</span>
+        </a>
+      </li>
+      
+    </ul>
+    <div class="sidebar-footer" *ngIf="isLoggedIn">
+      <a href="/" class="sidebar-link" (click)="onLogout()">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Logout</span>
+        </a>
+    </div>
+    </aside>
+    <div class="main">
+      <nav class="navbar navbar-expand border-bottom">
+        <button title="Toggle Menu" class="toggler-btn" type="button" (click)="toggle()">
+          <i class="fas fa-bars"></i>
+        </button>
+      </nav>
+      <main class="p-3">
+        <div class="container-fluid">
+          <div class="mb-3 text-center">
+            <router-outlet></router-outlet>
+          </div>
+        </div>
+      </main>
+    </div>
+</div>

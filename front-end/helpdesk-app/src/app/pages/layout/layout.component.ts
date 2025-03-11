@@ -17,6 +17,10 @@ export class LayoutComponent {
     return this.authService.isLoggedIn();
   }
 
+  toggle(): void {
+    document.querySelector("#sidebar")?.classList.toggle("collapsed");
+  }
+
   onLogout() {
     this.authService.logout();
     this.router.navigate(['/login']); // Redirect to login page
