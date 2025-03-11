@@ -15,19 +15,20 @@ export class AuthService {
   constructor(private http: HttpClient) { }
 
   login(username: string, password: string): Observable<any> {
-    return this.http.post<{ token: string }>(`${this.apiUrl}/login`, { username, password }).pipe(
+    return this.http.post<any>(`${this.apiUrl}/login`, { username, password }).pipe(
       tap(response => {
         localStorage.setItem(this.tokenKey, response.token); // Store token
       }),
       catchError(error => {
         console.error('Login failed:', error);
-        return of(null);
+        return of({ token: null, message: error.error.message });
       })
     );
   }
 
   logout(): void {
     localStorage.removeItem(this.tokenKey);
+    window.location.href = '/login';
   }
 
   isLoggedIn(): boolean {
@@ -36,8 +37,15 @@ export class AuthService {
 
     try {
       const decodedToken: any = jwtDecode(token);
-      return decodedToken.exp * 1000 > Date.now(); // Check token expiry
+      const isExpired = decodedToken.exp * 1000 < Date.now();
+
+      if (isExpired) {
+        this.logout(); // Automatically log out if expired
+        return false;
+      }
+      return true;
     } catch (error) {
+      this.logout();
       return false;
     }
   }

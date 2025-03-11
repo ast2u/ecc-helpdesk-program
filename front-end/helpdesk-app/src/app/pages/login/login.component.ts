@@ -27,7 +27,7 @@ export class LoginComponent {
           alert(data.message);
           this.router.navigate(['dashboard']); // Redirect to dashboard
         } else {
-          alert('Login failed. Please check your credentials.');
+          alert(data.message);
         }
       },
       error: (err) => {
