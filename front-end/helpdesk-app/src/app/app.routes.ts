@@ -1,9 +1,10 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './pages/login/login.component';
 import { LayoutComponent } from './pages/layout/layout.component';
-import { AdminDashboardComponent } from './pages/admin-dashboard/admin-dashboard.component';
-import { EmployeeDashboardComponent } from './pages/employee-dashboard/employee-dashboard.component';
 import { AuthGuard } from './auth/guards/auth.guard';
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { NoAuthGuard } from './auth/guards/no-auth.guard';
+
 
 export const routes: Routes = [
     {
@@ -13,14 +14,17 @@ export const routes: Routes = [
     },
     {
         path:'login',
-        component:LoginComponent
+        component:LoginComponent,
+        canActivate:[NoAuthGuard]
     },
     {
         path: '',
         component:LayoutComponent,
         children: [
-            { path: 'admin-dashboard', component: AdminDashboardComponent, canActivate: [AuthGuard], data: { role: 'ADMIN' } },
-            { path: 'employee-dashboard', component: EmployeeDashboardComponent, canActivate: [AuthGuard], data: { role: 'EMPLOYEE' } },
+            { path: 'dashboard',
+                component: DashboardComponent,
+                canActivate: [AuthGuard]
+            }
         ]
     }
 ];
