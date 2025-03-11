@@ -9,7 +9,12 @@
           <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="#">Home</a>
           </li>
+          <li class="nav-item d-flex" *ngIf="isLoggedIn">
+            <a class="nav-link active" (click)="onLogout()" aria-current="page" href="#">Logout</a> 
+            <!-- must be right -->
+          </li>
         </ul>
       </div>
     </div>
   </nav>
+  <router-outlet></router-outlet>
