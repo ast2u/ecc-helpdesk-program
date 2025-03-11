@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthService } from '../../auth/service/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -15,20 +16,27 @@ export class LoginComponent {
     "username": "",
     "password": ""
   }
-
-  http = inject(HttpClient);
+  
+  authService = inject(AuthService)
   router = inject(Router)
 
   onLogin() {
-    this.http.post('http://localhost:8080/login', this.loginObj).subscribe((data:any) => {
-      if(data.result){
-        alert(data.message);
-        localStorage.setItem('helpdesk-token', data.token);
-        this.router.navigate(['dashboard']);
-      } else {
-        alert(data.message)
+    this.authService.login(this.loginObj.username, this.loginObj.password).subscribe({
+      next: (data) => {
+        if (data) {
+          alert(data.message);
+          this.router.navigate(['dashboard']); // Redirect to dashboard
+        } else {
+          alert('Login failed. Please check your credentials.');
+        }
+      },
+      error: (err) => {
+        if (err.status === 401) {
+          alert('Invalid username or password');
+        } else {
+          alert('Something went wrong. Please try again later.');
+        }
       }
-
-  });
+    });
 }
 }
