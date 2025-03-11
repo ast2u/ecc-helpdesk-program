@@ -13,6 +13,7 @@ public interface EmployeeService {
     ResponseEntity<?> authenticateUser(LoginRequest loginRequest);
     EmployeeDto createEmployee(EmployeeDto employeeDto);
     EmployeeProfileDto getEmployeeProfile();
+    List<String> getEmployeeRoles();
     EmployeeProfileDto updateEmployeeProfile(EmployeeProfileDto profileDto);
     Page<EmployeeDto> getAllEmployees(EmployeeSearchRequest searchRequest);
     EmployeeDto updateEmployeeById(Long employeeId, EmployeeDto updatedEmployee);

@@ -38,6 +38,12 @@ public class EmployeeController {
         return ResponseEntity.ok(employeeProfileDtoDto);
     }
 
+    @GetMapping("/roles")
+    @PreAuthorize("hasAnyAuthority('EMPLOYEE', 'ADMIN')")
+    public ResponseEntity<List<String>> getUserRoles(){
+        return ResponseEntity.ok(employeeService.getEmployeeRoles());
+    }
+
     @PatchMapping("/me/edit")
     @PreAuthorize("hasAuthority('EMPLOYEE')")
     public ResponseEntity<EmployeeProfileDto> updateProfile(@Valid @RequestBody EmployeeProfileDto employeeProfileDto) {

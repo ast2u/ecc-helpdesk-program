@@ -129,6 +129,16 @@ public class EmployeeServiceImpl implements EmployeeService {
         return profileMapper.toProfileDto(employee);
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public List<String> getEmployeeRoles() {
+        Employee employee = securityUtil.getAuthenticatedEmployee();
+        return employee.getEmployeeRoles()
+                .stream()
+                .map(EmployeeRole::getRole_title)
+                .toList();
+    }
+
     //@CachePut(value = "employees", keyGenerator = "employeeCacheKeyGenerator")
     @Transactional
     @LogExecution
