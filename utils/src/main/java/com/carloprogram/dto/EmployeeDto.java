@@ -1,9 +1,10 @@
 package com.carloprogram.dto;
 
 
+import com.carloprogram.model.embeddable.Address;
+import com.carloprogram.model.embeddable.FullName;
 import com.carloprogram.model.enums.EmploymentStatus;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import lombok.AllArgsConstructor;
@@ -12,7 +13,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -21,13 +21,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EmployeeDto extends BaseDto{
-    private Long id;
 
-    @NotBlank(message = "First name is mandatory")
-    private String firstName;
-
-    @NotBlank(message = "Last name is mandatory")
-    private String lastName;
+    private FullName fullName;
 
     private String username;
 
@@ -35,8 +30,8 @@ public class EmployeeDto extends BaseDto{
     @Past(message = "Birth date must be in the past")
     private LocalDate birthDate;
 
-    @NotBlank(message = "Address is mandatory")
-    private String address;
+    @Valid
+    private Address address;
 
     private String contactNumber;
     private EmploymentStatus employmentStatus;

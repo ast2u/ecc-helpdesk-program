@@ -1,5 +1,7 @@
 package com.carloprogram.dto;
 
+import com.carloprogram.model.embeddable.Address;
+import com.carloprogram.model.embeddable.FullName;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -15,11 +17,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EmployeeProfileDto implements Serializable {
-    @Size(min = 1, message = "First name cannot be empty")
-    private String firstName;
-
-    @Size(min = 1, message = "Last name cannot be empty")
-    private String lastName;
+    private FullName fullName;
 
     @Size(min = 1, message = "Username cannot be empty")
     private String username;
@@ -29,8 +27,7 @@ public class EmployeeProfileDto implements Serializable {
 
     private int age;
 
-    @Size(min = 1, message = "Address cannot be empty")
-    private String address;
+    private Address address;
 
     @Size(min = 1, message = "Contact number cannot be empty")
     private String contactNumber;

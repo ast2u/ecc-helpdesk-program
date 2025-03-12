@@ -1,5 +1,7 @@
 package com.carloprogram.model;
 
+import com.carloprogram.model.embeddable.Address;
+import com.carloprogram.model.embeddable.FullName;
 import com.carloprogram.model.enums.EmploymentStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -19,11 +21,8 @@ import java.util.List;
 @Table(name = "employees")
 public class Employee extends BaseEntity{
 
-    @Column(name = "first_name", nullable = false)
-    private String firstName;
-
-    @Column(name = "last_name", nullable = false)
-    private String lastName;
+    @Embedded
+    private FullName fullName;
 
     @Column(nullable = false, unique = true)
     private String username;
@@ -34,8 +33,8 @@ public class Employee extends BaseEntity{
     @Column(name = "birth_date", nullable = false)
     private LocalDate birthDate;
     
-    @Column(nullable = false)
-    private String address;
+    @Embedded
+    private Address address;
 
     @Column(name = "contact_number")
     private String contactNumber;
