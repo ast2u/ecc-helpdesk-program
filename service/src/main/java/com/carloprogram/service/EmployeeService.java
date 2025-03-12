@@ -4,7 +4,7 @@ import com.carloprogram.dto.EmployeeDto;
 import com.carloprogram.dto.EmployeeProfileDto;
 import com.carloprogram.dto.search.EmployeeSearchRequest;
 import org.springframework.data.domain.Page;
-import com.carloprogram.dto.LoginRequest;
+import com.carloprogram.dto.login.LoginRequest;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;

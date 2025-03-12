@@ -4,6 +4,7 @@ import com.carloprogram.dto.EmployeeProfileDto;
 import com.carloprogram.model.Employee;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 
 import java.time.LocalDate;
@@ -13,6 +14,8 @@ import java.time.Period;
 public interface EmployeeProfileMapper {
     @Mapping(target = "age", source = "birthDate", qualifiedByName = "computeAge")
     EmployeeProfileDto toProfileDto(Employee employee);
+
+    void updateProfileFromDto(EmployeeProfileDto dto, @MappingTarget Employee employee);
 
     @Named("computeAge")
     static int computeAge(LocalDate birthDate) {

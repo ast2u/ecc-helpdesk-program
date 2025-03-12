@@ -1,8 +1,8 @@
 package com.carloprogram.service.impl;
 
 import com.carloprogram.dto.EmployeeProfileDto;
-import com.carloprogram.dto.LoginRequest;
-import com.carloprogram.dto.LoginResponse;
+import com.carloprogram.dto.login.LoginRequest;
+import com.carloprogram.dto.login.LoginResponse;
 import com.carloprogram.dto.search.EmployeeSearchRequest;
 import com.carloprogram.exception.ResourceNotFoundException;
 import com.carloprogram.logging.LogExecution;
@@ -149,12 +149,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employee = employeeRepository.findById(currentUser.getId())
                         .orElseThrow(() -> new ResourceNotFoundException("Employee not editable"));
 
-        Optional.ofNullable(employeeProfile.getFirstName()).ifPresent(employee::setFirstName);
-        Optional.ofNullable(employeeProfile.getLastName()).ifPresent(employee::setLastName);
-        Optional.ofNullable(employeeProfile.getUsername()).ifPresent(employee::setUsername);
-        Optional.ofNullable(employeeProfile.getBirthDate()).ifPresent(employee::setBirthDate);
-        Optional.ofNullable(employeeProfile.getAddress()).ifPresent(employee::setAddress);
-        Optional.ofNullable(employeeProfile.getContactNumber()).ifPresent(employee::setContactNumber);
+        profileMapper.updateProfileFromDto(employeeProfile, employee);
 
         employee.setUpdatedBy(currentUser.getUsername());
 
@@ -186,13 +181,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: " + employeeId));
 
-        // Only update fields if provided
-        Optional.ofNullable(updatedEmployee.getFirstName()).ifPresent(employee::setFirstName);
-        Optional.ofNullable(updatedEmployee.getLastName()).ifPresent(employee::setLastName);
-        Optional.ofNullable(updatedEmployee.getBirthDate()).ifPresent(employee::setBirthDate);
-        Optional.ofNullable(updatedEmployee.getAddress()).ifPresent(employee::setAddress);
-        Optional.ofNullable(updatedEmployee.getContactNumber()).ifPresent(employee::setContactNumber);
-        Optional.ofNullable(updatedEmployee.getEmploymentStatus()).ifPresent(employee::setEmploymentStatus);
+        employeeMapper.updateEmployeeFromDto(updatedEmployee,employee);
 
         if (updatedEmployee.getEmployeeRoles() != null) {
             List<EmployeeRole> roles = updatedEmployee.getEmployeeRoles().stream()
