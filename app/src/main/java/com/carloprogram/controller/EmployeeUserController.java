@@ -1,6 +1,6 @@
 package com.carloprogram.controller;
 
-import com.carloprogram.dto.LoginRequest;
+import com.carloprogram.dto.login.LoginRequest;
 import com.carloprogram.service.EmployeeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

@@ -1,4 +1,4 @@
-package com.carloprogram.dto;
+package com.carloprogram.dto.login;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
