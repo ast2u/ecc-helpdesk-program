@@ -1,6 +1,6 @@
 package com.carloprogram.security.config;
 
-import com.carloprogram.impl.EmployeeUserDetailsServiceImpl;
+import com.carloprogram.service.impl.EmployeeUserDetailsServiceImpl;
 import com.carloprogram.security.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

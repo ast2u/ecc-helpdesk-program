@@ -1,6 +1,5 @@
 package com.carloprogram.cache;
 
-import com.carloprogram.impl.EmployeeServiceImpl;
 import com.carloprogram.model.Employee;
 import com.carloprogram.security.config.SecurityUtil;
 import org.springframework.cache.interceptor.KeyGenerator;

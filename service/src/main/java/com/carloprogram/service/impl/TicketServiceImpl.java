@@ -1,4 +1,4 @@
-package com.carloprogram.impl;
+package com.carloprogram.service.impl;
 
 import com.carloprogram.dto.HelpTicketDto;
 import com.carloprogram.dto.search.TicketSearchRequest;
