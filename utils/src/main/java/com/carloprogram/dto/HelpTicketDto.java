@@ -16,7 +16,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class HelpTicketDto extends BaseDto {
-    private Long id;
     private String ticketNumber;
 
     @NotBlank(message = "Title is mandatory")
