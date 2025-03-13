@@ -7,10 +7,11 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 
 import java.security.SecureRandom;
 
-@Mapper(componentModel = "spring", uses = EmployeeRoleMapper.class)
+@Mapper(componentModel = "spring", uses = EmployeeRoleMapper.class, nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface EmployeeMapper {
     EmployeeDto mapToEmployeeDto(Employee employee);
 
@@ -23,6 +24,7 @@ public interface EmployeeMapper {
 
     @Mapping(target = "createdBy", ignore = true)
     @Mapping(target = "employeeRoles", ignore = true)
+    @Mapping(target = "id", ignore = true)
     void updateEmployeeFromDto(EmployeeDto dto, @MappingTarget Employee employee);
 
     @Named("generateUsername")
