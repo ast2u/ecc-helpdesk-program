@@ -14,13 +14,18 @@ public class TicketSpecification {
         return (root, query, criteriaBuilder) ->{
             List<Predicate> predicates = new ArrayList<>();
 
+            if(searchRequest.getTicketNumber() != null){
+                predicates.add(criteriaBuilder.like(root.get("ticketNumber"),"%" + searchRequest.getTicketNumber() + "%"));
+            }
+
             if(searchRequest.getDesc() != null && !searchRequest.getDesc().isEmpty()){
                 String pattern = "%" + searchRequest.getDesc().toLowerCase() + "%";
                 predicates.add(criteriaBuilder.or
                         (criteriaBuilder.like(criteriaBuilder.lower(root.get("title")), pattern),
-                        (criteriaBuilder.like(criteriaBuilder.lower(root.get("description")), pattern))
+                        (criteriaBuilder.like(criteriaBuilder.lower(root.get("body")), pattern))
                         ));
             }
+
             if(searchRequest.getStatus() != null){
                 predicates.add(criteriaBuilder.equal(root.get("status"), searchRequest.getStatus()));
             }

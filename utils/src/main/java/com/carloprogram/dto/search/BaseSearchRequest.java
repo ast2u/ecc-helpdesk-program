@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 public abstract class BaseSearchRequest {
 
     private Integer page = 0;
-    private Integer size = 4;
+    private Integer size = 10;
     private String createdBy;
     private String updatedBy;
 
