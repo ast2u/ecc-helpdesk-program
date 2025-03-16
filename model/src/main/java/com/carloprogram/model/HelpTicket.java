@@ -38,11 +38,4 @@ public class HelpTicket extends BaseEntity{
     @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TicketRemarks> remarks = new ArrayList<>();
 
-    @PrePersist
-    public void generateTicketNumber() {
-        if (this.ticketNumber == null) {
-            this.ticketNumber = UUID.randomUUID().toString();
-        }
-    }
-
 }

@@ -9,6 +9,7 @@ import org.mapstruct.Mapping;
 public interface HelpTicketMapper {
     HelpTicketDto mapToTicketDto(HelpTicket ticket);
 
+    @Mapping(target = "ticketNumber", ignore = true)
     @Mapping(target = "assignee", ignore = true)
     @Mapping(target = "createdBy", ignore = true)
     @Mapping(target = "updatedBy", ignore = true)
