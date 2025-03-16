@@ -31,7 +31,7 @@ public class EmployeeController {
         return new ResponseEntity<>(savedEmployee, HttpStatus.CREATED);
     }
 
-    @GetMapping("/me")
+    @GetMapping("/profile")
     @PreAuthorize("hasAuthority('EMPLOYEE')")
     public ResponseEntity<EmployeeProfileDto> getMyInfo() {
         EmployeeProfileDto employeeProfileDtoDto = employeeService.getEmployeeProfile();
@@ -44,7 +44,7 @@ public class EmployeeController {
         return ResponseEntity.ok(employeeService.getEmployeeRoles());
     }
 
-    @PatchMapping("/me/edit")
+    @PatchMapping("/profile/edit")
     @PreAuthorize("hasAuthority('EMPLOYEE')")
     public ResponseEntity<EmployeeProfileDto> updateProfile(@Valid @RequestBody EmployeeProfileDto employeeProfileDto) {
         EmployeeProfileDto employeeProfileDtoDto = employeeService.updateEmployeeProfile(employeeProfileDto);
