@@ -41,6 +41,12 @@ public class HelpTicketController {
         return ResponseEntity.ok(ticketDtos);
     }
 
+    @GetMapping("/v1/me")
+    public ResponseEntity<Page<HelpTicketDto>> getUserTickets(@ModelAttribute TicketSearchRequest request){
+        Page<HelpTicketDto> ticketDtos = ticketService.getUserTickets(request);
+        return ResponseEntity.ok(ticketDtos);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<HelpTicketDto> getTicket(@PathVariable("id") Long id){
         return ResponseEntity.ok(ticketService.getTicketById(id));

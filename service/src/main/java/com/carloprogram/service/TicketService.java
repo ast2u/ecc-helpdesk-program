@@ -10,6 +10,7 @@ public interface TicketService {
     HelpTicketDto updateTicket(Long id, HelpTicketDto helpTicketDto);
     HelpTicketDto assignTicket(Long id, Long assigneeId);
     Page<HelpTicketDto> getAllFilterTickets(TicketSearchRequest ticketSearch);
+    Page<HelpTicketDto> getUserTickets(TicketSearchRequest ticketSearch);
     HelpTicketDto getTicketById(Long id);
     void deleteTicketById(Long id);
 }

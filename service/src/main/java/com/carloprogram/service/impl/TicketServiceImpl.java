@@ -14,7 +14,7 @@ import com.carloprogram.model.enums.TicketStatus;
 import com.carloprogram.repository.EmployeeRepository;
 import com.carloprogram.repository.HelpTicketRepository;
 import com.carloprogram.service.TicketService;
-import com.carloprogram.util.ticket.HelpTicketUtil;
+import com.carloprogram.util.ticket.HelpTicketHelper;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -38,6 +38,9 @@ public class TicketServiceImpl implements TicketService {
     @Autowired
     private SecurityUtil securityUtil;
 
+    @Autowired
+    private HelpTicketHelper ticketHelper;
+
     @LogExecution
     @Transactional
     @Override
@@ -49,6 +52,8 @@ public class TicketServiceImpl implements TicketService {
         ticket.setCreatedBy(currentUser.getUsername());
         ticket.setUpdatedBy(currentUser.getUsername());
         ticket.setRemarks(null);
+        ticket.setTicketNumber(ticketHelper.generateTicketNumber());
+
 
         if(ticket.getStatus() == null ){
             ticket.setStatus(TicketStatus.DRAFT);
@@ -68,11 +73,11 @@ public class TicketServiceImpl implements TicketService {
 
         Employee currentUser = securityUtil.getAuthenticatedEmployee();
 
-        if(HelpTicketUtil.canUpdateTicket(currentUser, ticket)){
+        if(ticketHelper.canUpdateTicket(currentUser, ticket)){
             throw new UnauthorizedException("You are not authorized to update this ticket");
         }
 
-        HelpTicketUtil.updateTicketFields(ticket, helpTicketDto);
+        ticketHelper.updateTicketFields(ticket, helpTicketDto);
         ticket.setUpdatedBy(currentUser.getUsername());
 
         ticket = helpTicketRepository.save(ticket);
@@ -84,14 +89,14 @@ public class TicketServiceImpl implements TicketService {
     @Override
     public HelpTicketDto assignTicket(Long id, Long assigneeId) {
         HelpTicket ticket = helpTicketRepository.findByIdAndDeletedFalse(id)
-                .orElseThrow(() -> new RuntimeException("Ticket not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Ticket not found"));
 
         Employee assignee = employeeRepository.findByIdAndDeletedFalse(assigneeId)
-                .orElseThrow(() -> new RuntimeException("Assignee not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Assignee not found"));
 
         Employee currentUser = securityUtil.getAuthenticatedEmployee();
 
-        if(HelpTicketUtil.canUpdateTicket(currentUser, ticket)){
+        if(ticketHelper.canUpdateTicket(currentUser, ticket)){
             throw new UnauthorizedException("You are not authorized to update this ticket");
         }
 
@@ -114,6 +119,22 @@ public class TicketServiceImpl implements TicketService {
         Page<HelpTicket> ticketPage = helpTicketRepository.findAll(spec, pageable);
 
         return ticketPage.map(ticketMapper::mapToTicketDto);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Page<HelpTicketDto> getUserTickets(TicketSearchRequest ticketSearch){
+        Employee currentUser = securityUtil.getAuthenticatedEmployee();
+        Specification<HelpTicket> spec = TicketSpecification.filterTickets(ticketSearch)
+                .and((root, query, cb) -> cb.or(
+                        cb.equal(root.get("createdBy"), currentUser.getUsername()),
+                        cb.equal(root.get("assignee"), currentUser)
+                ));
+        Pageable pageable = PageRequest.of(ticketSearch.getPage(), ticketSearch.getSize());
+
+        Page<HelpTicket> tickets = helpTicketRepository.findAll(spec, pageable);
+
+        return tickets.map(ticketMapper::mapToTicketDto);
     }
 
     @Transactional(readOnly = true)
