@@ -14,20 +14,35 @@ public class EmployeeSpecification {
         return (root, query, criteriaBuilder) ->{
             List<Predicate> predicates = new ArrayList<>();
 
+            //Name filter
             if(searchRequest.getName() != null && !searchRequest.getName().isEmpty()){
                 String pattern = "%" + searchRequest.getName().toLowerCase() + "%";
                 predicates.add(criteriaBuilder.or(
-                        criteriaBuilder.like(criteriaBuilder.lower(root.get("firstName")), pattern),
-                        criteriaBuilder.like(criteriaBuilder.lower(root.get("lastName")), pattern))
+                        criteriaBuilder.like(criteriaBuilder.lower(root.get("fullName").get("firstName")), pattern),
+                        criteriaBuilder.like(criteriaBuilder.lower(root.get("fullName").get("middleName")), pattern),
+                        criteriaBuilder.like(criteriaBuilder.lower(root.get("fullName").get("lastName")), pattern))
                 );
             }
 
             if(searchRequest.getBirthDate() != null){
                 predicates.add(criteriaBuilder.equal(root.get("birthDate"), searchRequest.getBirthDate()));
             }
-            if(searchRequest.getAddress() != null){
-                predicates.add(criteriaBuilder.like(root.get("address"), "%" + searchRequest.getAddress() + "%"));
+
+            //Address Filter
+            if (searchRequest.getHouseNumber() != null) {
+                predicates.add(criteriaBuilder.like(root.get("address").get("houseNumber"), "%" + searchRequest.getHouseNumber() + "%"));
             }
+            if (searchRequest.getStreet() != null) {
+                predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("address").get("street")), "%" + searchRequest.getStreet().toLowerCase() + "%"));
+            }
+            if (searchRequest.getCity() != null) {
+                predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("address").get("city")), "%" + searchRequest.getCity().toLowerCase() + "%"));
+            }
+            if (searchRequest.getZipCode() != null) {
+                predicates.add(criteriaBuilder.like(root.get("address").get("zipCode"), "%" + searchRequest.getZipCode() + "%"));
+            }
+
+
             if(searchRequest.getStatus() != null){
                 predicates.add(criteriaBuilder.equal(root.get("employmentStatus"), searchRequest.getStatus()));
             }
@@ -48,7 +63,8 @@ public class EmployeeSpecification {
             }
 
             if(searchRequest.getRoles() != null){
-                predicates.add(root.join("employeeRoles").get("id").in(searchRequest.getRoles()));
+                String pattern = "%" + searchRequest.getRoles().toLowerCase() + "%";
+                predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("employeeRoles").get("role_title")), pattern));
             }
             if(searchRequest.getCreatedStart() != null && searchRequest.getCreatedEnd() != null){
                 predicates.add(criteriaBuilder.between(root.get("createdDate"), searchRequest.getCreatedStart(), searchRequest.getCreatedEnd()));

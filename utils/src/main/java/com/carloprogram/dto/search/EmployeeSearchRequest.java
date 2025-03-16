@@ -12,9 +12,12 @@ import java.util.List;
 public class EmployeeSearchRequest extends BaseSearchRequest {
     private String name;
     private LocalDate birthDate;
-    private String address;
+    private String houseNumber;
+    private String street;
+    private String city;
+    private String zipCode;
     private EmploymentStatus status;
-    private List<Long> roles;
+    private String roles;
 
 
 
