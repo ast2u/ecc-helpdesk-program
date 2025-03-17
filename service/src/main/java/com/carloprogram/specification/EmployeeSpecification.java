@@ -67,10 +67,10 @@ public class EmployeeSpecification {
                 predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("employeeRoles").get("role_title")), pattern));
             }
             if(searchRequest.getCreatedStart() != null && searchRequest.getCreatedEnd() != null){
-                predicates.add(criteriaBuilder.between(root.get("createdDate"), searchRequest.getCreatedStart(), searchRequest.getCreatedEnd()));
+                predicates.add(criteriaBuilder.between(root.get("createdAt"), searchRequest.getCreatedStart(), searchRequest.getCreatedEnd()));
             }
             if(searchRequest.getUpdatedStart() != null && searchRequest.getUpdatedEnd() != null){
-                predicates.add(criteriaBuilder.between(root.get("updatedDate"), searchRequest.getUpdatedStart(), searchRequest.getUpdatedEnd()));
+                predicates.add(criteriaBuilder.between(root.get("updatedAt"), searchRequest.getUpdatedStart(), searchRequest.getUpdatedEnd()));
             }
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));

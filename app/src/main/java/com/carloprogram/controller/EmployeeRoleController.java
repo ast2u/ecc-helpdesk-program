@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/employee_roles")
-public class    EmployeeRoleController {
+public class EmployeeRoleController {
 
     private final EmployeeRoleService employeeRoleService;
 
