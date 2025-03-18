@@ -14,6 +14,7 @@ public interface EmployeeService {
     EmployeeDto createEmployee(EmployeeDto employeeDto);
     EmployeeProfileDto getEmployeeProfile();
     List<String> getEmployeeRoles();
+    EmployeeDto getEmployeeById(Long employeeId);
     EmployeeProfileDto updateEmployeeProfile(EmployeeProfileDto profileDto);
     Page<EmployeeDto> getAllEmployees(EmployeeSearchRequest searchRequest);
     EmployeeDto updateEmployeeById(Long employeeId, EmployeeDto updatedEmployee);

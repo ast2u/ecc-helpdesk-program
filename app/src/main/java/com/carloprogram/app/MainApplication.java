@@ -16,7 +16,7 @@ import static org.springframework.data.web.config.EnableSpringDataWebSupport.Pag
 @EntityScan(basePackages = "com.carloprogram.model")
 @EnableJpaRepositories(basePackages = "com.carloprogram.repository")
 @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO)
-@EnableCaching
+//@EnableCaching
 public class MainApplication {
 
     public static void main(String[] args)

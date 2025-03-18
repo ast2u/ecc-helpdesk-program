@@ -11,7 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/employees")
@@ -59,8 +61,15 @@ public class EmployeeController {
         return ResponseEntity.ok(employees);
     }
 
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<EmployeeDto> getEmployeeById(@PathVariable("id") Long id) {
+        EmployeeDto employees = employeeService.getEmployeeById(id);
+        return ResponseEntity.ok(employees);
+    }
+
     //Build update employee rest api
-    @PatchMapping("/{id}")
+    @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<EmployeeDto> updateEmployee(@PathVariable("id") Long employeeId,
                                                       @RequestBody EmployeeDto updatedEmployee){
@@ -80,9 +89,12 @@ public class EmployeeController {
     //Build delete employee rest api
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<String> deleteEmployee(@PathVariable("id") Long employeeId){
+    public ResponseEntity<Map<String,Object>> deleteEmployee(@PathVariable("id") Long employeeId){
         employeeService.deleteEmployeeById(employeeId);
-        return ResponseEntity.ok("Employee#" + employeeId + " marked as deleted");
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "Employee marked as deleted");
+        response.put("employeeId", employeeId);
+        return ResponseEntity.ok(response);
     }
 
 }

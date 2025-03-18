@@ -171,6 +171,16 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeePage.map(employeeMapper::mapToEmployeeDto);
     }
 
+    @Override
+    public EmployeeDto getEmployeeById(Long employeeId) {
+        Employee employee = employeeRepository.findById(employeeId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Employee does not exists " +
+                                "with given id: " + employeeId));
+
+        return employeeMapper.mapToEmployeeDto(employee);
+    }
+
     //@CacheEvict(value = "employeeList", allEntries = true)
     @Transactional
     @LogExecution
