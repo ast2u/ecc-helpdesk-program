@@ -144,6 +144,11 @@ public class TicketServiceImpl implements TicketService {
                 .orElseThrow(()-> new ResourceNotFoundException("Ticket id does not exists " +
                         "with given id: "+ id));
 
+        Employee currentUser = securityUtil.getAuthenticatedEmployee();
+
+        if(ticketHelper.canUpdateTicket(currentUser, ticket)){
+            throw new UnauthorizedException("You are not authorized to view this ticket");
+        }
         return ticketMapper.mapToTicketDto(ticket);
 
     }
