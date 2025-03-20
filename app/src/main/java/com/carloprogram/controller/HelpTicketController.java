@@ -9,6 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/tickets")
 public class HelpTicketController {
@@ -54,10 +57,14 @@ public class HelpTicketController {
         return ResponseEntity.ok(ticketService.getTicketById(id));
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteTicket(@PathVariable("id") Long id){
+    public ResponseEntity<Map<String,Object>> deleteTicket(@PathVariable("id") Long id){
         ticketService.deleteTicketById(id);
-        return ResponseEntity.ok("Ticket with number:" + id + " deleted successfully.");
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "Employee marked as deleted");
+        response.put("employeeId", id);
+        return ResponseEntity.ok(response);
     }
 
 }
