@@ -9,7 +9,6 @@ import org.mapstruct.Mapping;
 public interface TicketRemarksMapper {
 
     @Mapping(source = "ticket.id", target = "ticketId")
-    @Mapping(source = "employeeId.id", target = "employeeId")
     TicketRemarksDto mapToTicketRemarksDto(TicketRemarks ticketRemarks);
 
     @Mapping(target = "ticket", ignore = true)

@@ -24,6 +24,6 @@ public class HelpTicketDto extends BaseDto {
     @NotBlank(message = "Body is mandatory")
     private String body;
     private TicketStatus status;
-    private EmployeeDto assignee;
+    private EmployeeProfileDto assignee;
     private List<TicketRemarksDto> remarks;
 }

@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 public class TicketRemarksDto {
     private Long id;
     private Long ticketId;
-    private Long employeeId;
+    private EmployeeProfileDto employeeId;
 
     @NotBlank(message = "Comment is mandatory")
     private String comment;
