@@ -7,7 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/employee_roles")
@@ -49,9 +51,12 @@ public class EmployeeRoleController {
 
     //Build delete role rest api
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteEmployeeRole(@PathVariable("id") Long employeeRoleId){
+    public ResponseEntity<Map<String,Object>> deleteEmployeeRole(@PathVariable("id") Long employeeRoleId){
         employeeRoleService.deleteEmployeeRoleById(employeeRoleId);
-        return ResponseEntity.ok("Role deleted successfully!");
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "EmployeeRole marked as deleted");
+        response.put("RoleID", employeeRoleId);
+        return ResponseEntity.ok(response);
 
     }
 
