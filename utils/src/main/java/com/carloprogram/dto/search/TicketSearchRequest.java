@@ -10,7 +10,7 @@ public class TicketSearchRequest extends BaseSearchRequest {
     private String ticketNumber;
     private String desc;
     private TicketStatus status;
-    private Long assignee;
+    private String assignee;
 
 
 

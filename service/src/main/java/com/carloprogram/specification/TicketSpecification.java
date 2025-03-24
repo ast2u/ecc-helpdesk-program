@@ -40,7 +40,7 @@ public class TicketSpecification {
             }
 
             if(searchRequest.getAssignee() != null){
-                predicates.add(criteriaBuilder.equal(root.get("assignee").get("id"), searchRequest.getAssignee()));
+                predicates.add(criteriaBuilder.equal(root.get("assignee").get("username"), searchRequest.getAssignee()));
             }
             if(searchRequest.getCreatedStart() != null && searchRequest.getCreatedEnd() != null){
                 predicates.add(criteriaBuilder.between(root.get("createdDate"), searchRequest.getCreatedStart(), searchRequest.getCreatedEnd()));
