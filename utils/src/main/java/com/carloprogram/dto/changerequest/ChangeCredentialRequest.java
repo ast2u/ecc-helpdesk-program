@@ -9,7 +9,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChangePasswordRequest {
+public class ChangeCredentialRequest {
+    private String username;
     private String oldPassword;
     private String newPassword;
 }

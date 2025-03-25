@@ -1,7 +1,7 @@
 package com.carloprogram.controller;
 
 import com.carloprogram.dto.EmployeeProfileDto;
-import com.carloprogram.dto.changerequest.ChangePasswordRequest;
+import com.carloprogram.dto.changerequest.ChangeCredentialRequest;
 import com.carloprogram.service.EmployeeCredentialsUpdateService;
 import com.carloprogram.service.EmployeeService;
 import jakarta.validation.Valid;
@@ -42,9 +42,9 @@ public class EmployeeController {
         return ResponseEntity.ok(employeeProfileDtoDto);
     }
 
-    @PutMapping("profile/change-password")
-    public ResponseEntity<Map<String,Object>> changePassword(@RequestBody ChangePasswordRequest request) {
-        return updateService.changePassword(request);
+    @PutMapping("profile/change-credentials")
+    public ResponseEntity<Map<String,Object>> changeCredentials(@RequestBody ChangeCredentialRequest request) {
+        return updateService.changeCredentials(request);
     }
 
 }
