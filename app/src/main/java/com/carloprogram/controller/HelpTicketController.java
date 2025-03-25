@@ -67,4 +67,26 @@ public class HelpTicketController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("v1/me/count/created")
+    public ResponseEntity<Long> getCreatedTicketCount() {
+        long count = ticketService.countTicketsByCreatedBy();
+        return ResponseEntity.ok(count);
+    }
+
+    @GetMapping("v1/me/count/assigned")
+    public ResponseEntity<Long> getAssignedTicketCount() {
+        long count = ticketService.countTicketsByAssignee();
+        return ResponseEntity.ok(count);
+    }
+
+    @GetMapping("v1/me/count/status/created")
+    public ResponseEntity<Map<String, Long>> getCreatedTicketStatusCount() {
+        return ResponseEntity.ok(ticketService.countTicketsByStatusCreated());
+    }
+
+    @GetMapping("v1/me/count/status/assigned")
+    public ResponseEntity<Map<String, Long>> getAssignedTicketStatusCount() {
+        return ResponseEntity.ok(ticketService.countTicketsByStatusAssigned());
+    }
+
 }

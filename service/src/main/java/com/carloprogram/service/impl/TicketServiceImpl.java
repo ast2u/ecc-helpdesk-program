@@ -23,6 +23,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 @Service
 public class TicketServiceImpl implements TicketService {
 
@@ -165,5 +169,39 @@ public class TicketServiceImpl implements TicketService {
         ticket.setUpdatedBy(currentUser.getUsername());
         ticket.setDeleted(true);
         helpTicketRepository.save(ticket);
+    }
+
+    @Override
+    public long countTicketsByCreatedBy() {
+        Employee currentUser = securityUtil.getAuthenticatedEmployee();
+        return helpTicketRepository.countByCreatedBy(currentUser.getUsername());
+    }
+
+    @Override
+    public long countTicketsByAssignee() {
+        Employee currentUser = securityUtil.getAuthenticatedEmployee();
+        return helpTicketRepository.countByAssignee_Id(currentUser.getId());
+    }
+
+    @Override
+    public Map<String, Long> countTicketsByStatusCreated() {
+        Employee currentUser = securityUtil.getAuthenticatedEmployee();
+        List<Object[]> results = helpTicketRepository.countTicketsByStatusCreated(currentUser.getUsername());
+        return results.stream()
+                .collect(Collectors.toMap(
+                        result -> ((TicketStatus) result[0]).name(),
+                        result -> (Long) result[1]
+                ));
+    }
+
+    @Override
+    public Map<String, Long> countTicketsByStatusAssigned() {
+        Employee currentUser = securityUtil.getAuthenticatedEmployee();
+        List<Object[]> results = helpTicketRepository.countTicketsByStatusAssigned(currentUser.getId());
+        return results.stream()
+                .collect(Collectors.toMap(
+                        result -> ((TicketStatus) result[0]).name(),
+                        result -> (Long) result[1]
+                ));
     }
 }

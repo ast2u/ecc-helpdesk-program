@@ -4,6 +4,8 @@ import com.carloprogram.dto.HelpTicketDto;
 import com.carloprogram.dto.search.TicketSearchRequest;
 import org.springframework.data.domain.Page;
 
+import java.util.Map;
+
 public interface TicketService {
 
     HelpTicketDto createTicket(HelpTicketDto helpTicketDto);
@@ -13,4 +15,8 @@ public interface TicketService {
     Page<HelpTicketDto> getUserTickets(TicketSearchRequest ticketSearch);
     HelpTicketDto getTicketById(Long id);
     void deleteTicketById(Long id);
+    long countTicketsByCreatedBy();
+    long countTicketsByAssignee();
+    Map<String, Long> countTicketsByStatusCreated();
+    Map<String, Long> countTicketsByStatusAssigned();
 }
