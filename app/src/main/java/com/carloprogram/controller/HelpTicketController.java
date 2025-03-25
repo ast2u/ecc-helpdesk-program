@@ -67,6 +67,18 @@ public class HelpTicketController {
         return ResponseEntity.ok(response);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("v1/count/available")
+    public ResponseEntity<Long> getAvailableTicketCount() {
+        return ResponseEntity.ok(ticketService.countAvailableTickets());
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("v1/count/unassigned")
+    public ResponseEntity<Long> getUnassignedTicketCount() {
+        return ResponseEntity.ok(ticketService.countUnassignedTickets());
+    }
+
     @GetMapping("v1/me/count/created")
     public ResponseEntity<Long> getCreatedTicketCount() {
         long count = ticketService.countTicketsByCreatedBy();

@@ -172,18 +172,33 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public long countTicketsByCreatedBy() {
         Employee currentUser = securityUtil.getAuthenticatedEmployee();
-        return helpTicketRepository.countByCreatedBy(currentUser.getUsername());
+        return helpTicketRepository.countByCreatedByAndDeletedFalse(currentUser.getUsername());
     }
 
     @Override
+    @Transactional(readOnly = true)
     public long countTicketsByAssignee() {
         Employee currentUser = securityUtil.getAuthenticatedEmployee();
-        return helpTicketRepository.countByAssignee_Id(currentUser.getId());
+        return helpTicketRepository.countByAssignee_IdAndDeletedFalse(currentUser.getId());
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public long countUnassignedTickets() {
+        return helpTicketRepository.countByAssignee_IdAndDeletedFalse(null);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public long countAvailableTickets() {
+        return helpTicketRepository.countByDeletedFalse();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public Map<String, Long> countTicketsByStatusCreated() {
         Employee currentUser = securityUtil.getAuthenticatedEmployee();
         List<Object[]> results = helpTicketRepository.countTicketsByStatusCreated(currentUser.getUsername());
@@ -195,6 +210,7 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Map<String, Long> countTicketsByStatusAssigned() {
         Employee currentUser = securityUtil.getAuthenticatedEmployee();
         List<Object[]> results = helpTicketRepository.countTicketsByStatusAssigned(currentUser.getId());

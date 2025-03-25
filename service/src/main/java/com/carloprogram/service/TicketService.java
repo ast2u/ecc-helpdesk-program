@@ -17,6 +17,8 @@ public interface TicketService {
     void deleteTicketById(Long id);
     long countTicketsByCreatedBy();
     long countTicketsByAssignee();
+    long countUnassignedTickets();
+    long countAvailableTickets();
     Map<String, Long> countTicketsByStatusCreated();
     Map<String, Long> countTicketsByStatusAssigned();
 }

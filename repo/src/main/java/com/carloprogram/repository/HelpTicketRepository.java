@@ -15,12 +15,14 @@ public interface HelpTicketRepository extends JpaRepository<HelpTicket, Long>, J
     @Query("SELECT h.ticketNumber FROM HelpTicket h ORDER BY h.id DESC LIMIT 1")
     String findLastTicketNumber();
 
-    long countByCreatedBy(String username);
-    long countByAssignee_Id(Long employeeId);
+    long countByCreatedByAndDeletedFalse(String username);
+    long countByAssignee_IdAndDeletedFalse(Long employeeId);
 
-    @Query("SELECT h.status, COUNT(h) FROM HelpTicket h WHERE h.createdBy = :username GROUP BY h.status")
+    long countByDeletedFalse();
+
+    @Query("SELECT h.status, COUNT(h) FROM HelpTicket h WHERE h.createdBy = :username AND h.deleted = false GROUP BY h.status")
     List<Object[]> countTicketsByStatusCreated(@Param("username") String username);
 
-    @Query("SELECT h.status, COUNT(h) FROM HelpTicket h WHERE h.assignee.id = :employeeId GROUP BY h.status")
+    @Query("SELECT h.status, COUNT(h) FROM HelpTicket h WHERE h.assignee.id = :employeeId AND h.deleted = false GROUP BY h.status")
     List<Object[]> countTicketsByStatusAssigned(@Param("employeeId") Long employeeId);
 }
