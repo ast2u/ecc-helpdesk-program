@@ -2,6 +2,7 @@ package com.carloprogram.security.config;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -41,7 +42,7 @@ public class SecurityConfig {
         http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(requests -> requests
-            .requestMatchers("/login").permitAll()
+            .requestMatchers("/login", "/refresh").permitAll()
             .requestMatchers("/api/employee_roles/**").hasAuthority("ADMIN")
             .requestMatchers("/api/employees/**").hasAnyAuthority("EMPLOYEE", "ADMIN")
             .requestMatchers("/api/tickets/**").hasAnyAuthority("EMPLOYEE", "ADMIN")
@@ -60,6 +61,7 @@ public class SecurityConfig {
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Collections.singletonList("*"));
         configuration.setAllowCredentials(true);
+        configuration.setExposedHeaders(List.of("Authorization"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

@@ -19,6 +19,9 @@ import com.carloprogram.security.config.SecurityUtil;
 import com.carloprogram.security.service.JwtService;
 import com.carloprogram.service.EmployeeService;
 import com.carloprogram.specification.EmployeeSpecification;
+import io.lettuce.core.output.ScanOutput;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -72,20 +75,59 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @LogExecution
-    public ResponseEntity<?> authenticateUser(LoginRequest loginRequest) {
+    public ResponseEntity<?> authenticateUser(LoginRequest loginRequest, HttpServletResponse response) {
         try{
             Authentication authentication = authManager
                     .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername()
                             , loginRequest.getPassword()));
 
             EmployeeUserPrincipal userPrincipal = (EmployeeUserPrincipal) authentication.getPrincipal();
-            String token = jwtService.generateToken(userPrincipal);
+            String accessToken = jwtService.generateToken(userPrincipal);
+            String refreshToken = jwtService.generateRefreshToken(userPrincipal);
 
-            return ResponseEntity.ok(new LoginResponse(true,token,"Login successful"));
+            Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
+            refreshTokenCookie.setHttpOnly(true);
+            refreshTokenCookie.setSecure(true); // Set to true in production (HTTPS required)
+            refreshTokenCookie.setPath("/refresh"); // Restrict access to only refresh endpoint
+            refreshTokenCookie.setMaxAge(7 * 24 * 60 * 60); // 7 days expiration
+
+            response.addCookie(refreshTokenCookie);
+
+            return ResponseEntity.ok(new LoginResponse(true,accessToken,"Login successful"));
 
         }catch(BadCredentialsException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(new LoginResponse(false, null, "Invalid username or password"));
+        }
+    }
+
+    @Override
+    @LogExecution
+    public ResponseEntity<?> refreshTokenUser(String refreshToken){
+        try{
+            System.out.println("Executed here for refresh");
+            if (refreshToken == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(new LoginResponse(false, null, "Refresh token is missing."));
+            }
+
+            if (jwtService.isTokenExpired(refreshToken)) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(new LoginResponse(false, null, "Refresh token expired, login again."));
+            }
+
+            String username = jwtService.extractUserName(refreshToken);
+            Employee employee = employeeRepository.findByUsernameAndDeletedFalse(username)
+                    .orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + username));
+            EmployeeUserPrincipal userPrincipal = new EmployeeUserPrincipal(employee);
+
+            String newAccessToken = jwtService.generateToken(userPrincipal);
+
+            return ResponseEntity.ok(new LoginResponse(true, newAccessToken, "Token refreshed successfully"));
+
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new LoginResponse(false, null, "Could not refresh token: " + e.getMessage()));
         }
     }
 

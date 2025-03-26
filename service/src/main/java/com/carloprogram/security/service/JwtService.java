@@ -24,8 +24,11 @@ public class JwtService {
     @Value("${jwt.secret}")
     private String secret;
 
-    @Value("${jwt.expiration}")
-    private long expirationTime;
+    @Value("${jwt.accessToken.expiration}")
+    private long accessTokenExpiration; //15 minutes
+
+    @Value("${jwt.refreshToken.expiration}")
+    private long refreshTokenExpiration; //7 days
 
     private static final Logger logger = LoggerFactory.getLogger(JwtService.class);
 
@@ -44,7 +47,16 @@ public class JwtService {
                 .setSubject(principal.getUsername())
                 .claim("roles", roles)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
+                .setExpiration(new Date(System.currentTimeMillis() + accessTokenExpiration))
+                .signWith(getKey())
+                .compact();
+    }
+
+    public String generateRefreshToken(EmployeeUserPrincipal principal) {
+        return Jwts.builder()
+                .setSubject(principal.getUsername()) // No need for roles
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + refreshTokenExpiration)) // 7 days
                 .signWith(getKey())
                 .compact();
     }
@@ -93,7 +105,7 @@ public class JwtService {
         }
     }
 
-    private boolean isTokenExpired(String token){
+    public boolean isTokenExpired(String token){
         return extractExpiration(token).before(new Date());
     }
 

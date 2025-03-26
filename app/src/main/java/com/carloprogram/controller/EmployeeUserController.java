@@ -2,7 +2,9 @@ package com.carloprogram.controller;
 
 import com.carloprogram.dto.login.LoginRequest;
 import com.carloprogram.service.EmployeeService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,7 +19,12 @@ public class EmployeeUserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest){
-        return employeeService.authenticateUser(loginRequest);
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpServletResponse response){
+        return employeeService.authenticateUser(loginRequest, response);
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<?> refresh(@CookieValue(name = "refreshToken", required = false) String refreshToken) {
+        return employeeService.refreshTokenUser(refreshToken);
     }
 }
