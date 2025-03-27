@@ -22,6 +22,7 @@ import java.util.List;
 @AllArgsConstructor
 public class EmployeeDto extends BaseDto{
 
+    @Valid
     private FullName fullName;
 
     private String username;

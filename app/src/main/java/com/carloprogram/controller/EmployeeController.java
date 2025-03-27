@@ -13,7 +13,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/employees")
-@PreAuthorize("hasAuthority('EMPLOYEE')")
+@PreAuthorize("hasAnyAuthority('EMPLOYEE', 'ADMIN')")
 public class EmployeeController {
 
     private final EmployeeService employeeService;
