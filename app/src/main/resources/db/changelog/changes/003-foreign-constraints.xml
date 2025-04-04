@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet author="ast2u" id="08-add-foreign-employee_id-roles">
+        <addForeignKeyConstraint baseColumnNames="employee_id" baseTableName="employee_to_role"
+                                 constraintName="fk_employee_role"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="employees"
+                                 validate="true"/>
+    </changeSet>
+
+
+    <changeSet author="ast2u" id="09-add-foreign-assignee-ticket">
+        <addForeignKeyConstraint baseColumnNames="assignee_id" baseTableName="help_tickets"
+                                 constraintName="fk_ticket_employee"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="employees"
+                                 validate="true"/>
+    </changeSet>
+
+
+    <changeSet author="ast2u" id="10-add-foreign-employee_role_id-employee">
+        <addForeignKeyConstraint baseColumnNames="employee_role_id" baseTableName="employee_to_role"
+                                 constraintName="fk_role_employee"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
+                                 referencedTableName="employee_role"
+                                 validate="true"/>
+    </changeSet>
+
+
+    <changeSet author="ast2u" id="11-add-foreign-ticket-remarks">
+        <addForeignKeyConstraint baseColumnNames="ticket_id" baseTableName="ticket_remarks"
+                                 constraintName="fk_ticket_remarks"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
+                                 referencedTableName="help_tickets"
+                                 validate="true"/>
+    </changeSet>
+
+
+    <changeSet author="ast2u" id="12-add-foreign-employee-remarks">
+        <addForeignKeyConstraint baseColumnNames="employee_id" baseTableName="ticket_remarks"
+                                 constraintName="fk_employee_remarks"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id"
+                                 referencedTableName="employees"
+                                 validate="true"/>
+    </changeSet>
+
+</databaseChangeLog>

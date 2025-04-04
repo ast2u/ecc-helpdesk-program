@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="13-add-role-admin-employee_role" author="ast2u">
+        <insert tableName="employee_role">
+            <column name="role_title" value="ADMIN"/>
+            <column name="role_desc" value="Admin position in the database"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="14-add-role-employee-employee_role" author="ast2u">
+        <insert tableName="employee_role">
+            <column name="role_title" value="EMPLOYEE"/>
+            <column name="role_desc" value="Employee position in the database"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="15-add-admin-employee" author="ast2u">
+        <insert tableName="employees">
+            <column name="first_name" value="Carlo"/>
+            <column name="last_name" value="Astudillo"/>
+            <column name="birth_date" valueDate="2012-04-01"/>
+            <column name="employment_status" value="FULL_TIME"/>
+            <column name="city" value="Quezon City"/>
+            <column name="street" value="Lagro"/>
+            <column name="house_number" value="123"/>
+            <column name="zip_code" value="1118"/>
+            <column name="password" value="$2y$10$MX9BFSX93Xcju4KyeBkKgOeTOl68oA3D2HztnIWPdgkEqNZ6lSETu"/>
+            <column name="username" value="asto123"/>
+            <column name="created_at" value="2025-04-03T14:30:15.123"/>
+            <column name="deleted" value="false"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="16-add-role-to-employee" author="ast2u">
+        <insert tableName="employee_to_role">
+            <column name="employee_id" value="1"/>
+            <column name="employee_role_id" value="1"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>
+

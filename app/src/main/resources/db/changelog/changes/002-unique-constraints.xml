@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet author="ast2u" id="06-unique-username">
+        <addUniqueConstraint columnNames="username" constraintName="uk_employee_username" tableName="employees"/>
+    </changeSet>
+
+    <changeSet author="ast2u" id="07-unique-ticket_number">
+        <addUniqueConstraint columnNames="ticket_number" constraintName="uk_ticket_ticketNumber" tableName="help_tickets"/>
+    </changeSet>
+
+</databaseChangeLog>
+
