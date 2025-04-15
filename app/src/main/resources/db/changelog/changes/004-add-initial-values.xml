@@ -21,16 +21,16 @@
 
     <changeSet id="15-add-admin-employee" author="ast2u">
         <insert tableName="employees">
-            <column name="first_name" value="Carlo"/>
-            <column name="last_name" value="Astudillo"/>
+            <column name="first_name" value="John"/>
+            <column name="last_name" value="Doe"/>
             <column name="birth_date" valueDate="2012-04-01"/>
             <column name="employment_status" value="FULL_TIME"/>
-            <column name="city" value="Quezon City"/>
-            <column name="street" value="Lagro"/>
+            <column name="city" value="Manila"/>
+            <column name="street" value="Portali"/>
             <column name="house_number" value="123"/>
-            <column name="zip_code" value="1118"/>
+            <column name="zip_code" value="8888"/>
             <column name="password" value="$2y$10$MX9BFSX93Xcju4KyeBkKgOeTOl68oA3D2HztnIWPdgkEqNZ6lSETu"/>
-            <column name="username" value="asto123"/>
+            <column name="username" value="doe123"/>
             <column name="created_at" value="2025-04-03T14:30:15.123"/>
             <column name="deleted" value="false"/>
         </insert>
