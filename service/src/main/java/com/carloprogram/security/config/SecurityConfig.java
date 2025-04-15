@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -40,8 +41,10 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(AbstractHttpConfigurer::disable)
+            //.headers(HeadersConfigurer::disable) //h2 database
             .authorizeHttpRequests(requests -> requests
             .requestMatchers("/login").permitAll()
+            //.requestMatchers("/h2-console/**").permitAll() //h2 database
             .requestMatchers("/api/employee_roles/**").hasAuthority("ADMIN")
             .requestMatchers("/api/employees/**").hasAnyAuthority("EMPLOYEE", "ADMIN")
             .requestMatchers("/api/tickets/**").hasAnyAuthority("EMPLOYEE", "ADMIN")

@@ -7,7 +7,7 @@ services:
     environment:
       POSTGRES_DB: ecc_helpdesk
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: asto123
+      POSTGRES_PASSWORD: qwerty123
     ports:
       - "5432:5432"
     volumes:
